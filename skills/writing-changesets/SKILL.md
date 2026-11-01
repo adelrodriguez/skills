@@ -1,5 +1,5 @@
 ---
-name: write-changesets
+name: writing-changesets
 description: Use when writing a changeset, or before filing a PR in a repository that uses changesets.
 ---
 

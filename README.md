@@ -98,7 +98,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `upload` | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `FILE_UPLOAD_*` environment variables |
 | `what` | Restates the last message in plain language | `unslop` |
 | `why` | Investigates why code is shaped the way it is, from history, issues, and docs, and rates its confidence | `gh` |
-| `write-changesets` | Writes changesets for the parts of a diff that users notice | `writing-documentation`, `unslop` |
+| `writing-changesets` | Writes changesets for the parts of a diff that users notice | `writing-documentation`, `unslop` |
 | `writing-documentation` | Writes and reorganizes documentation by the four [Diátaxis](https://diataxis.fr) types | `unslop` |
 | `writing-for-agents` | Writes skills and `AGENTS.md` files that agents follow the same way every run | `writing-documentation`, `restraint`, `unslop` |
 | `writing-for-humans` | Writes product and marketing copy without filler or sales language | `restraint`, `unslop`, [`break-ui`](https://github.com/emilkowalski/skills) |
