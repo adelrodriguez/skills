@@ -30,7 +30,7 @@ The script returns these exit codes:
 - `0`: the file is in the bucket and its URL is printed.
 - `64`: the arguments are invalid.
 - `66`: the path is not a file.
-- `78`: a setting is missing or could not be read. If the machine has no 1Password service account, tell the user and point them to [Set up a machine](#set-up-a-machine). Otherwise, set the named `FILE_UPLOAD_*` variable or address the reported 1Password access or CLI issue.
+- `78`: one or more `FILE_UPLOAD_*` variables are not set. Tell the user which variables the error names. Do not look for the values yourself.
 - Any other code: inspect the error, retry once, then report the failure if the retry fails.
 
 ## Use the URL
@@ -49,26 +49,12 @@ If an upload fails, say which attachment is missing instead of leaving a broken 
 
 ## Configure the upload script
 
-Set these environment variables or store the values in the matching fields of the `FILE_UPLOAD` item in 1Password. Environment variables take precedence.
+The script reads its settings from these environment variables. Loading them is the machine's job, not this skill's.
 
-The default item is `op://Agents/FILE_UPLOAD`. Set `FILE_UPLOAD_OP_REF` to use another item.
-
-| Variable | 1Password field |
-| --- | --- |
-| `FILE_UPLOAD_ACCESS_KEY_ID` | `access_key_id` |
-| `FILE_UPLOAD_SECRET_ACCESS_KEY` | `secret_access_key` |
-| `FILE_UPLOAD_ACCOUNT_ID` | `account_id` |
-| `FILE_UPLOAD_BUCKET` | `bucket` |
-| `FILE_UPLOAD_PUBLIC_URL` | `public_url` |
+- `FILE_UPLOAD_ACCESS_KEY_ID`
+- `FILE_UPLOAD_SECRET_ACCESS_KEY`
+- `FILE_UPLOAD_ACCOUNT_ID`
+- `FILE_UPLOAD_BUCKET`
+- `FILE_UPLOAD_PUBLIC_URL`
 
 Never print, log, or commit these values.
-
-### Set up a machine
-
-The script reads 1Password as a service account, so it never shows an approval prompt. Each machine needs its own service account with read-only access to the `Agents` vault. Save its token once per machine:
-
-```bash
-bash -c 'umask 077; mkdir -p ~/.config/agents; read -rsp "Token: " t; printf "%s\n" "$t" > ~/.config/agents/1password-token; echo'
-```
-
-The script loads the token for its own `op` calls, so it works under any agent host. An `OP_SERVICE_ACCOUNT_TOKEN` that is already set takes precedence.
