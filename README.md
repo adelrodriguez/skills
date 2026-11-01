@@ -91,6 +91,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `pr` | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
 | `refresh` | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
 | `restraint` | Cuts additions down to what improves the user's outcome | None |
+| `takeover` | Finishes someone else's pull request, branch, or thread in a replacement PR, and keeps their credit | `gh`, `refresh`, `pr`, `monitor`, T3 Code for threads |
 | `test-pruning` | Sorts every test into delete, strengthen, rewrite, or keep, and applies the changes | `testing` |
 | `testing` | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |
 | `unslop` | Rewrites text to remove filler, jargon, and patterns that sound generated | My instructions |
