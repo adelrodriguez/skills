@@ -1,24 +1,9 @@
 # skills
 
-My agent skills, one folder each in `skills/<name>/SKILL.md`. [instructions](https://github.com/adelrodriguez/instructions) depends on this package, and [dotagents](https://github.com/adelrodriguez/dotagents) installs both through [APM](https://github.com/microsoft/apm).
+My agent skills. Each one is a folder in `skills/<name>/` with a `SKILL.md`, so any agent that reads skills can use it.
 
 ## Installing
 
-To install every skill at user scope:
+Copy or symlink a skill folder into your agent's skills directory, such as `~/.claude/skills/`.
 
-```sh
-apm install --global adelrodriguez/skills
-```
-
-To install some of them, list them in `apm.yml`:
-
-```yaml
-dependencies:
-  apm:
-    - git: adelrodriguez/skills
-      skills: [pr, testing]
-```
-
-## Updating
-
-Push the change to `main`, then run `apm update --global` in `~/.apm` to install it.
+I install them with [APM](https://github.com/microsoft/apm): [dotagents](https://github.com/adelrodriguez/dotagents) installs [instructions](https://github.com/adelrodriguez/instructions), which depends on this repo.
