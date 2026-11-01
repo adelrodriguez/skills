@@ -65,7 +65,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
 - **Subagents.** `code-review`, `council-review`, and `codebase-design` start other agents, so the agent must be able to run subagents. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
-- **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables or from 1Password with the `op` CLI. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the setup.
+- **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
 - **T3 Code.** `housekeeping` cleans up T3 Code worktrees and threads.
 - **My instructions.** `unslop` applies the "Write clearly" rules from [adelrodriguez/instructions](https://github.com/adelrodriguez/instructions).
 
@@ -95,7 +95,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `test-pruning` | Sorts every test into delete, strengthen, rewrite, or keep, and applies the changes | `testing` |
 | `testing` | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |
 | `unslop` | Rewrites text to remove filler, jargon, and patterns that sound generated | My instructions |
-| `upload` | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `op` or environment variables |
+| `upload` | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `FILE_UPLOAD_*` environment variables |
 | `what` | Restates the last message in plain language | `unslop` |
 | `why` | Investigates why code is shaped the way it is, from history, issues, and docs, and rates its confidence | `gh` |
 | `write-changesets` | Writes changesets for the parts of a diff that users notice | `writing-documentation`, `unslop` |
