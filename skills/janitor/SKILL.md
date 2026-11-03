@@ -29,8 +29,8 @@ These are the kinds of items:
 - **Simulators and emulators:** iOS simulators and Android emulators.
 - **Watchers:** PR watchers and monitors that are still running after the work they watch is done.
 - **Temp files:** files and folders in `/tmp` and `$TMPDIR`, including those from `mktemp`, and scratch scripts, logs, and screenshots outside the repository.
-- **Repository leftovers:** untracked files the task created, and debug logging, commented-out code, images, and `TODO`s that the task added to its own diff.
-- **Git state:** stashes, temporary branches, and worktrees the task created.
+- **Repository leftovers:** untracked files the scope created, and debug logging, commented-out code, images, and `TODO`s that the scope added to its diff.
+- **Git state:** stashes, temporary branches, and worktrees the scope created.
 
 In your own scopes, read back through the thread and list each item of every kind that it started or created.
 
@@ -46,7 +46,7 @@ The step is done when every item is listed with its PID, tab, device ID, path, o
 
 ## Confirm who owns each item
 
-In your own scopes, confirm each process by PID with `ps -o pid,ppid,etime,command -p <pid>`, and check that its command and start time match what the task ran. Confirm each file by its path and the command that created it.
+In your own scopes, confirm each process by PID with `ps -o pid,ppid,etime,command -p <pid>`, and check that its command and start time match a command that the thread ran within the scope. Confirm each file by its path and the command that created it.
 
 In other agents' scopes, tie each item to the session that started it:
 
@@ -89,11 +89,11 @@ The step is done when the user agrees.
 Remove the items marked remove:
 
 - Stop each process by its PID with `kill <pid>`. Never use `pkill -f` or a pattern match. When a process is still running after a few seconds, report it instead of using `kill -9`.
-- Close each browser tab and session with the tool that opened it. Stop a browser that no tool can close by the PID of its main process.
+- Close each browser tab and session with the tool that opened it. Stop a browser by the PID of its main process only when the scope launched that browser with its own `--user-data-dir`. Never stop the user's own browser. Report a tab in it that no tool can close.
 - Shut down each simulator with `xcrun simctl shutdown <udid>`, and each emulator with `adb -s <serial> emu kill`.
 - Stop each watcher, using the tool or process that started it.
 - Delete temp files by their literal paths. Never delete a path built from an unset or empty variable.
-- In the repository, delete the untracked files the task created, and remove the leftovers from the task's diff. Leave every other change alone.
+- In the repository, delete the untracked files the scope created, and remove the leftovers from the scope's diff. Leave every other change alone.
 - Drop a stash or delete a branch only when its changes are committed and pushed elsewhere.
 
 The step is done when every item marked remove is gone.
@@ -105,7 +105,8 @@ The step is done when every item marked remove is gone.
 - No process was stopped by a pattern match.
 - No file outside the scope's own list was deleted.
 - Kept items each have a reason.
-- `git status` and the task's diff show only the changes the task meant to leave.
+- No browser was stopped unless the scope launched it with its own `--user-data-dir`.
+- `git status` and the diff show only the changes the scope meant to leave.
 
 ## Return the result
 
