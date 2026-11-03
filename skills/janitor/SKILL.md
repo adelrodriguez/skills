@@ -89,14 +89,14 @@ The step is done when the user agrees.
 Remove the items marked remove:
 
 - Stop each process by its PID with `kill <pid>`. Never use `pkill -f` or a pattern match. When a process is still running after a few seconds, report it instead of using `kill -9`.
-- Close each browser tab and session with the tool that opened it. Stop a browser by the PID of its main process only when the scope launched that browser with its own `--user-data-dir`. Never stop the user's own browser. Report a tab in it that no tool can close.
+- Close each browser tab and session with the tool that opened it. Stop a browser that no tool can close by the PID of its main process, only when an agent in the scope launched it. Never stop the user's own browser. Report a tab in it that no tool can close.
 - Shut down each simulator with `xcrun simctl shutdown <udid>`, and each emulator with `adb -s <serial> emu kill`.
 - Stop each watcher, using the tool or process that started it.
 - Delete temp files by their literal paths. Never delete a path built from an unset or empty variable.
 - In the repository, delete the untracked files the scope created, and remove the leftovers from the scope's diff. Leave every other change alone.
 - Drop a stash or delete a branch only when its changes are committed and pushed elsewhere.
 
-The step is done when every item marked remove is gone.
+The step is done when every item marked remove is gone or reported.
 
 ## Check the cleanup
 
@@ -105,7 +105,7 @@ The step is done when every item marked remove is gone.
 - No process was stopped by a pattern match.
 - No file outside the scope's own list was deleted.
 - Kept items each have a reason.
-- No browser was stopped unless the scope launched it with its own `--user-data-dir`.
+- No browser was stopped unless an agent in the scope launched it.
 - `git status` and the diff show only the changes the scope meant to leave.
 
 ## Return the result
