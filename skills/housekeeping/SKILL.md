@@ -37,8 +37,10 @@ For each worktree, record:
   ```bash
   sqlite3 -readonly "file:$HOME/.t3/userdata/statev2.sqlite?mode=ro" \
     "select payload_json from orchestration_v2_projection_threads where archived_at is null and deleted_at is null" |
-    jq -r 'select(.worktreePath != null and .settledAt == null and .settledOverride == null) | .worktreePath'
+    jq -r 'select(.worktreePath != null and (.settledOverride == "active" or (.settledOverride == null and .settledAt == null))) | .worktreePath'
   ```
+
+  A `settledOverride` of `"active"` means the user pinned the thread open, so it counts as unsettled even when `settledAt` is set.
 
 - Its size, from `du -sk`. Run one `du` per worktree in parallel, such as with `xargs -P 12 -n 1`, because one `du` over all worktrees can take longer than 10 minutes.
 
@@ -61,7 +63,7 @@ git -C <worktree> merge-tree --write-tree origin/main HEAD | head -1
 git -C <worktree> rev-parse 'origin/main^{tree}'
 ```
 
-When the two hashes match, mark the worktree as "already in main", because removing it loses no work. A squash-merged branch can still fail this check when later commits on main touched the same lines.
+When the two hashes match and the worktree has no uncommitted changes, mark it as "already in main", because removing it loses no work. The check compares only commits, so list a worktree's uncommitted changes even when its commits are in main. A squash-merged branch can still fail this check when later commits on main touched the same lines.
 
 When the user is short on disk space, also mark each keep worktree that is kept only for its recent commit and would otherwise be in the remove group.
 
