@@ -83,7 +83,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `housekeeping` | Cleans up old agent worktrees and temp files across the machine, after a dry run | T3 Code, `gh` |
 | `how` | Explains how a subsystem works, or where code belongs, from the source | None |
 | `issue` | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
-| `janitor` | Cleans up what the current task left behind, such as processes, watchers, and temp files | `housekeeping` |
+| `janitor` | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, T3 Code for other sessions |
 | `maintenance` | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |
 | `modernize` | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
 | `monitor` | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `comment`, `upload` |
