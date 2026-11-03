@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Clean up the machine
 
-Remove what agents have left across the machine, across every repository and thread. Cleanup for one task belongs to the `janitor` skill.
+Remove what agents have left across the machine, across every repository and thread. Running processes, browsers, and simulators, and cleanup for one task or session, belong to the `janitor` skill.
 
 ## Set the scope
 
