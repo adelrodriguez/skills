@@ -66,4 +66,4 @@ The step is done when one item is recommended, or the work on it has started.
 
 ## Return the result
 
-Return the recommended item as a link with its one-sentence reason, then the two alternatives. When nothing is unblocked, say so, and name the item that blocks the most others.
+If you could not read a source, such as the tracker, the open PRs, or the blocked-by dependencies, start with one line that names it, because the recommended item may be blocked. Return the recommended item as a link with its one-sentence reason, then the two alternatives. When nothing is unblocked, say so, and name the item that blocks the most others.

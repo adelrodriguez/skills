@@ -103,7 +103,7 @@ If the tool supports follow-up messages, send the next brief to the saved review
 
 The review is complete when the reviewer returns APPROVE for the current behavior diff, no blocker or should finding remains open, and you have no unresolved concerns.
 
-Stop if a finding remains disputed after two replies or you reach the round limit or execution budget. For unresolved findings, summarize both sides in two or three lines each and let the user decide. Reaching a limit is not approval.
+Stop if a finding remains disputed after two replies or you reach the round limit or execution budget. For unresolved findings, summarize both sides in two or three lines each for the user to decide. Reaching a limit is not approval.
 
 Do not push during the loop. Push after agreement only if the user asked to push, ship, or update the PR. If you push to a PR after approval, include:
 
@@ -111,4 +111,6 @@ Do not push during the loop. Push after agreement only if the user asked to push
 
 If the tool reports the effort, add `on <effort>`.
 
-Report the rounds used, actual model, any fallback and reason, checks, diff size before and after, fixed and declined findings with reasons, and whether you pushed. Include usage when the tool reports it, or state that usage is unavailable.
+If the review fell short of the request, start the report with one line that says how and why, such as a fallback model, no independent reviewer, or a round limit reached with findings open. A shortfall that the report does not name reads as a full review.
+
+Report the rounds used, actual model, any fallback and reason, checks, diff size before and after, fixed and declined findings with reasons, and whether you pushed. Include usage when the tool reports it, or state that usage is unavailable. When the user must decide unresolved findings, put that question last, with nothing after it, because some harnesses hide text that follows a question until the user answers.
