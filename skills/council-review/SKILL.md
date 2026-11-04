@@ -30,7 +30,7 @@ For a proposal, replace the code diff with the document or question, constraints
 
 ## Report the council results
 
-Use the report required by `code-review`, with the actual model and outcome for each reviewer. For code reviews, add a score table with one row per reviewer, columns for the reviewer number, full model name, and reasoning effort, and one column per round. Keep the reviewer number in its own column. If several reviewers use the same model, repeat the model name in separate rows. Write `no score` when a reviewer omits a score and `not completed` when a review is missing.
+Use the report required by `code-review`, with the actual model and outcome for each reviewer. Fewer reviewers than requested, or a round with a missing response, is a shortfall for the first line that `code-review` requires. For code reviews, add a score table with one row per reviewer, columns for the reviewer number, full model name, and reasoning effort, and one column per round. Keep the reviewer number in its own column. If several reviewers use the same model, repeat the model name in separate rows. Write `no score` when a reviewer omits a score and `not completed` when a review is missing.
 
 For example, a two-round council review could end with:
 
