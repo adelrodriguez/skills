@@ -84,8 +84,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `full-send` | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
 | `full-stop` | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
 | `harden-ui` | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
-| `hillclimb` | Raises a score toward a target one measured round at a time, and keeps only the rounds that improve it | `hillfind`, `pr`, `council-review` for judged hills |
-| `hillfind` | Turns a goal into a score, a target, and guardrails that a hill climb can use | None |
+| `hillclimb` | Turns a goal into a score and target, then raises the score one measured round at a time and keeps only the rounds that improve it | `pr`, `council-review` for judged hills |
 | `housekeeping` | Cleans up old agent worktrees and temp files across the machine, after a dry run | T3 Code, `gh` |
 | `how` | Explains how a subsystem works, or where code belongs, from the source | None |
 | `interface-design` | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |

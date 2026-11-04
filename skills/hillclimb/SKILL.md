@@ -1,6 +1,6 @@
 ---
 name: hillclimb
-description: Use when the user says "hill climb" or "hillclimb", or asks to keep improving something until a score or target is reached.
+description: Use when the user says "hill climb" or "hillclimb", asks to keep improving something until a score or target is reached, or asks how to measure a goal or optimization.
 metadata:
   reference:
     - "https://youtu.be/xq0eB8vxeqk"
@@ -12,7 +12,7 @@ Raise a score until it reaches the target, one measured round at a time. Keep ea
 
 ## Get the hill
 
-Read the spec at `.hillclimb/<slug>/hill.md`. If no spec exists, or the goal, score, target, or budget is unclear, run the `hillfind` skill first.
+Read the spec at `.hillclimb/<slug>/hill.md`. If no spec exists, or the goal, score, target, or budget is unclear, follow [`references/find-the-hill.md`](references/find-the-hill.md) to write one. When the user only asked how to measure a goal, stop after the spec.
 
 The step is done when the user has agreed to a spec with a measure, a baseline, a target, guardrails, and a budget.
 

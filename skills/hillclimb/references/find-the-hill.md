@@ -1,14 +1,6 @@
----
-name: hillfind
-description: Use when the user says "hillfind", asks how to measure a goal or optimization, or before a hill climb whose goal, score, or target is unclear.
-metadata:
-  reference:
-    - "https://youtu.be/xq0eB8vxeqk"
----
+# Find the hill
 
-# Hillfind
-
-Turn a goal into a hill: a score that one command or one council round produces, a target that ends the climb, and guardrails that must not get worse. Write the hill to a spec that the `hillclimb` skill reads.
+Use this file when no spec exists, or when the goal, score, target, or budget is unclear. It turns a goal into a hill: a score that one command or one council round produces, a target that ends the climb, and guardrails that must not get worse. Everything else is in [`../SKILL.md`](../SKILL.md).
 
 An agent raises whatever score it gets, so the score must reward the goal and nothing else.
 
@@ -26,7 +18,7 @@ Pick the first kind that can measure the goal:
 
 1. **Programmatic.** A program prints a number, such as wall time, bytes sent, bundle size, tokens in a prompt, or passing tests.
 2. **Eval.** No program exists yet, but you can collect cases where the current behavior fails. Collect real failures from history, issues, logs, or agent threads. Group them by category, and turn each into a case with an expected outcome. The score is the number of passing cases.
-3. **Judged.** The goal is a matter of taste, such as visual design, writing, or API ergonomics. A council of models scores artifacts against a rubric, as described in [`../hillclimb/references/judged-scores.md`](../hillclimb/references/judged-scores.md).
+3. **Judged.** The goal is a matter of taste, such as visual design, writing, or API ergonomics. A council of models scores artifacts against a rubric, as described in [`judged-scores.md`](judged-scores.md).
 
 A judged score is noisy and costs the most, so use it only when the first two kinds cannot measure the goal. A judged goal can still have programmatic guardrails.
 
