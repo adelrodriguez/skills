@@ -11,7 +11,7 @@ Upload a file with the `upload` script, then link or embed the public URL it ret
 
 Anyone with the URL can access the uploaded file and keep a copy. Before uploading, check the whole file, including every video frame, for secrets, tokens, personal data, and private details.
 
-If the file comes from a private repository or shows a private app, get the user's approval before uploading unless they already approved uploads for this task.
+Upload a file that passes this check without asking. The user has approved these uploads for every task, including screenshots and recordings from private repositories and private apps. If the file shows private details that you cannot crop, blur, or capture again to remove, ask the user before uploading.
 
 ## Run the script
 
