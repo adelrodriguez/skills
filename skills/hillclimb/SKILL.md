@@ -20,6 +20,8 @@ The step is done when the user has agreed to a spec with a measure, a baseline, 
 
 Create the branch `hillclimb/<slug>`. When you climb past a target that an earlier climb already reached, stack the new branch on the earlier one, so the result that already met its target stays mergeable. When the harness is worth keeping after the climb, such as an eval built from real failures, move it out of `.hillclimb/` and commit it first.
 
+Add `.hillclimb/` to `$(git rev-parse --git-common-dir)/info/exclude` unless the line is already there, so a revert and a commit both leave the hill's files alone.
+
 Create `.hillclimb/<slug>/log.md` with the start time and one table. Record the baseline as round 0.
 
 ```
@@ -32,12 +34,14 @@ Started: 2026-11-04 14:10
 | 2 | skip even numbers | 0.80 ms | pass | reverted: within noise | 3 min |
 ```
 
+The step is done when `git check-ignore -q .hillclimb/` exits with code 0 and the log has round 0.
+
 ## Run each round
 
 1. Pick the next change most likely to raise the score. Use the findings from the last judged round, the failing eval cases, or a profile of the slow path. Make one idea per round, so a regression traces back to one idea. When the score is the lowest of several parts, such as rubric categories, and several parts tie at the lowest value, make one idea for each tied part in the same round, because raising one part alone cannot raise the score.
 2. Make the change.
 3. Measure with the spec's command. For a judged hill, follow [`references/judged-scores.md`](references/judged-scores.md).
-4. Keep the round when every guardrail passes and the score beats the last kept score by more than the spec's noise. When the score is the lowest of several parts, keep the round when at least one part beats its last kept value by more than the noise and no part falls by more than the noise. Commit it with the score in the message. Otherwise, run `git reset --hard <last kept commit>` and `git clean -fd`. Leave out `-x`, so `.hillclimb/` survives.
+4. Keep the round when every guardrail passes and the score beats the last kept score by more than the spec's noise. When the score is the lowest of several parts, keep the round when at least one part beats its last kept value by more than the noise and no part falls by more than the noise. For a judged hill, decide from the same-run comparison in [`references/judged-scores.md`](references/judged-scores.md) instead of from the last kept score. Commit it with the score in the message. Otherwise, run `git reset --hard <last kept commit>` and `git clean -fd`. Leave out `-x`, so `.hillclimb/` survives.
 5. Add the round to the log. For a reverted round, write the reason in the outcome.
 
 The round is done when the log has its row and the working tree matches the last kept commit.
@@ -76,6 +80,6 @@ Open a pull request only when the user asks, using the `pr` skill.
 ## Check the climb
 
 - Every round has a log row with its score, guardrails, and outcome.
-- Every kept round beat the last kept score, or one of its parts with no part falling, by more than the noise, and every guardrail passed.
+- Every kept round met the keep rule in step 4, and every guardrail passed.
 - The harness, rubric, and references match the spec the user agreed to.
 - The report gives the start and end scores, the stop reason, and the time.

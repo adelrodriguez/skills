@@ -4,7 +4,7 @@ Use this file when no spec exists, or when the goal, score, target, or budget is
 
 An agent raises whatever score it gets, so the score must reward the goal and nothing else.
 
-Keep every file for the hill in `.hillclimb/<slug>/` at the repository root, where `<slug>` is the goal in a few kebab-case words. Add `.hillclimb/` to `$(git rev-parse --git-common-dir)/info/exclude` unless the line is already there.
+Keep every file for the hill in `.hillclimb/<slug>/` at the repository root, where `<slug>` is the goal in a few kebab-case words.
 
 ## Name the goal
 
