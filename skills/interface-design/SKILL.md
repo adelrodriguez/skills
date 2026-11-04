@@ -1,6 +1,6 @@
 ---
 name: interface-design
-description: Use when building, redesigning, or restyling UI, such as pages, screens, and components, or when a design looks generic or templated.
+description: Use when building, redesigning, or restyling UI, such as pages, screens, and components, or when the user says a design looks generic, templated, or AI-made.
 metadata:
   reference:
     - "https://github.com/pbakaus/impeccable/blob/main/skill/SKILL.src.md"
