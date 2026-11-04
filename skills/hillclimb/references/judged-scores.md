@@ -18,7 +18,7 @@ Capture the candidate with the spec's capture steps every round, in the same sta
 
 ## Brief each judge
 
-Run each judge twice every round, each run in a fresh context with its own shuffle, and keep every run read-only. Give every run the same brief with the candidate, the baseline, and the references. Label each artifact with a neutral letter and shuffle the order each run, so the judge cannot tell which artifact is the candidate. Before each run, empty `.hillclimb/<slug>/blind/`, copy the artifacts into it under names made only of the label and the state, such as `B-dark.png`, and give the judge only those paths. A path such as `artifacts/3/` or `references/linear/` names the version.
+Run each judge twice every round, each run in a fresh context with its own shuffle, and keep every run read-only. Give every run the same brief with the candidate, the baseline, and the references. Label each artifact with a neutral letter and shuffle the order each run, so the judge cannot tell which artifact is the candidate. Before each run, create a new temporary directory outside the repository, such as one from `mktemp -d`, and copy the artifacts into it under names made only of the label, the state, and the slice, such as `B-dark-02.png`. Give the judge only that directory. A path such as `artifacts/3/` or `references/linear/` names the version, and a folder inside `.hillclimb/` sits next to the scores and the label mapping. Each run gets its own directory, so parallel runs cannot overwrite each other.
 
 ```
 Review only. Do not edit files or start subagents.
