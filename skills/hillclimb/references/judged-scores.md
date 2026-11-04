@@ -14,7 +14,7 @@ Run the full panel at round 0 and at least every third round, even before the fi
 
 ## Capture the artifacts
 
-Capture the candidate with the spec's capture steps every round, in the same states, sizes, and themes. Keep the round 0 artifacts as the baseline. Capture the references once, unless they come from software that changes.
+Capture the candidate with the spec's capture steps every round, in the same states, sizes, and themes. Show the last kept round's artifacts as the baseline, so the keep decision compares two versions scored in the same runs. A judge can score the same unchanged artifacts lower in one round than in the round before, so a comparison across rounds can hide a real gain. Capture the references once, unless they come from software that changes.
 
 ## Brief each judge
 
@@ -44,7 +44,7 @@ Do not tell a judge the target, the previous scores, or which version is the can
 
 Map the labels back to the candidate, the baseline, and the references. Save every run's full reply as `.hillclimb/<slug>/scores/<round>-<judge>-<run>.md`. Average each judge's two runs per category. In the log's score column, write each judge's lowest averaged category score for the candidate and the candidate's gap to the best reference.
 
-- References can score differently between rounds even when their artifacts do not change, so track the gap with the score.
+- References and the baseline can score differently between rounds even when their artifacts do not change, so decide keep or revert from the candidate against the baseline in the same runs, and track the gap to the best reference with the score.
 - Treat a change smaller than the spec's noise in a judge's average as noise.
 - Act on a finding only when it repeats across runs, judges, or rounds, or when you can see the problem in the artifact. Judges contradict each other, such as asking for a control beside a label in one round and below it in the next. When findings conflict, keep the current design and log the conflict.
 - Decline a finding that would make the artifact misrepresent the product, and log why.
