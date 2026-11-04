@@ -2,7 +2,7 @@
 
 Use this file when the hill's kind is judged. It covers the panel, the artifacts, the judge brief, and how to read the scores. Everything else is in [`../SKILL.md`](../SKILL.md).
 
-A judged score is relative. One model can score the same screenshot differently on three runs, and a design that scores 9 alone can score 7.4 next to strong references. References in every round keep the scores tied to something real.
+A judged score is relative and noisy. One model can score byte-identical screenshots a full point apart on two runs, and a design that scores 9 alone can score 7.4 next to strong references. References in every round keep the scores tied to something real, and two runs per judge keep one run's noise from deciding a round.
 
 ## Choose the panel
 
@@ -10,13 +10,15 @@ Choose the judges and models with the `council-review` skill's rules for choosin
 
 Add judges in stages. Run only the first judge until it scores the target in every category. Then add the next judge, and continue. A slow judge must not delay the rounds before its stage. The climb finishes only when every judge meets the target in one round.
 
+Run the full panel at round 0 and at least every third round, even before the first judge meets the target. One judge's gains do not always carry over to another, and a later judge can raise problems the first never mentions. When a full-panel round shows a gain that only one judge sees, treat the round as unchanged for the judges that do not see it. When the user names the judges for every round, run all of them every round.
+
 ## Capture the artifacts
 
 Capture the candidate with the spec's capture steps every round, in the same states, sizes, and themes. Keep the round 0 artifacts as the baseline. Capture the references once, unless they come from software that changes.
 
 ## Brief each judge
 
-Start each judge in a fresh context every round, and keep it read-only. Give every judge the same brief with the candidate, the baseline, and the references. Label each artifact with a neutral letter and shuffle the order each round, so the judge cannot tell which artifact is the candidate.
+Run each judge twice every round, each run in a fresh context with its own shuffle, and keep every run read-only. Give every run the same brief with the candidate, the baseline, and the references. Label each artifact with a neutral letter and shuffle the order each run, so the judge cannot tell which artifact is the candidate.
 
 ```
 Review only. Do not edit files or start subagents.
@@ -40,14 +42,15 @@ Do not tell a judge the target, the previous scores, or which version is the can
 
 ## Read the scores
 
-Map the labels back to the candidate, the baseline, and the references. Save every judge's full reply as `.hillclimb/<slug>/scores/<round>-<judge>.md`. In the log's score column, write each judge's lowest category score for the candidate and the candidate's gap to the best reference.
+Map the labels back to the candidate, the baseline, and the references. Save every run's full reply as `.hillclimb/<slug>/scores/<round>-<judge>-<run>.md`. Average each judge's two runs per category. In the log's score column, write each judge's lowest averaged category score for the candidate and the candidate's gap to the best reference.
 
 - References can score differently between rounds even when their artifacts do not change, so track the gap with the score.
-- Treat a change of less than half a point from one judge as noise. Score again before you keep or revert on it.
-- Verify each finding against the artifact before you act on it. Count evidence, not votes.
+- Treat a change smaller than the spec's noise in a judge's average as noise.
+- Act on a finding only when it repeats across runs, judges, or rounds, or when you can see the problem in the artifact. Judges contradict each other, such as asking for a control beside a label in one round and below it in the next. When findings conflict, keep the current design and log the conflict.
+- Decline a finding that would make the artifact misrepresent the product, and log why.
 
 ## Check the judged round
 
-- Every judge saw the same artifacts under neutral labels in a fresh context.
+- Every judge ran twice on the same artifacts, under neutral labels, each run in a fresh context.
 - No brief mentioned the target, earlier scores, or which version is the candidate.
-- Every judge's full reply is saved, and the log has each judge's lowest score and gap.
+- Every run's full reply is saved, and the log has each judge's lowest averaged score and gap.

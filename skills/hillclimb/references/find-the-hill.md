@@ -37,7 +37,7 @@ The step is done when the score has a kind and a direction, higher or lower is b
 Write one command, or one documented set of steps for a judged score, that measures the current checkout and prints the score and a pass or fail for every guardrail.
 
 - **Programmatic and eval.** Run each sample in a fresh process, so a cache cannot raise the score, and keep build output and caches out of the working tree. Make the command take the median of at least five samples and print it with the spread, which is the highest sample minus the lowest. Record the noise as the spread's share of the median, such as 3%, so it still applies after the score moves.
-- **Judged.** Write the rubric: four to eight categories, such as hierarchy, typography, color and contrast, spacing, iconography, and consistency, each with one line on what a 10 means. Pick references, which are the best comparable products, so judges score by comparison and not in isolation. Write the steps that capture the same states as artifacts every round, such as screenshots in light and dark mode. The noise is half a point.
+- **Judged.** Write the rubric: four to eight categories, such as hierarchy, typography, color and contrast, spacing, iconography, and consistency, each with one line on what a 10 means. Pick references, which are the best comparable products, so judges score by comparison and not in isolation. Open each reference capture and drop any that renders differently from what its users see, such as a fallback font or an unrelated site at the expected address. Write the steps that capture the same states as artifacts every round, such as screenshots in light and dark mode, without development overlays such as a framework toolbar. Score the baseline twice with the first judge, and set the noise to the largest category difference between the two runs, and at least one point.
 
 Check that the guardrails cover the behavior a change could break. When the existing tests are weak, add a check that compares the output with the baseline's output.
 
@@ -64,7 +64,7 @@ Score: <name>, <higher|lower> is better
 Measure: <command and the directory to run it from, or the steps for a judged round>
 Harness: <paths of the harness and its fixtures>
 Baseline: <value>
-Noise: <share of the score, or half a point for judged>
+Noise: <share of the score, or points for judged>
 Target: <condition that ends the climb>
 Guardrails:
 - <name>: <check>
