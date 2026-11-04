@@ -50,6 +50,11 @@ If the agent still rushes a step with a clear condition, move the later steps wh
 
 End the document with a "Check the..." list, like the other skills in this repository.
 
+## Write the report step
+
+- When the skill can run with less than it needs, such as without subagents, a browser, or one of its sources, have the report's first line say what was missing and what the agent did instead. A fallback that the report does not name reads as a full run.
+- When the report ends with a question for the user, put the question last, with nothing after it. Some harnesses hide text that follows a structured question until the user answers, so a report written after the question reads as if it never ran.
+
 ## Choose the words
 
 - Use the terms that the user, the codebase, and the other skills use. Give each concept one name and use it every time.
@@ -68,6 +73,7 @@ End the document with a "Check the..." list, like the other skills in this repos
 - The trigger lists each case once and puts the user's word first.
 - Each file is one type, and the how-to points to each reference file from the step that uses it.
 - Every step ends on a condition the agent can check.
+- The report names any missing capability on its first line, and a closing question comes last.
 - No rule appears in two places. Rules owned by another skill are pointers.
 - Every file, command, script, and skill the document names exists.
 - Use the `unslop` skill on the prose.
