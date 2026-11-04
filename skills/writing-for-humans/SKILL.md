@@ -51,7 +51,7 @@ Apply the `unslop` skill to every string. Then cut these patterns, which are spe
 
 ## Check the copy
 
-- Check each string at the real width with the longest likely value. Use the `break-ui` skill to test long names, large counts, and missing values.
+- Check each string at the real width with the longest likely value. Use the `harden-ui` skill to test long names, large counts, and missing values.
 - Check that each thing has the same name everywhere it appears.
 - Check that the copy adds no claim, number, or feature that the source does not support.
 - For a translated product, write in the product's language, avoid idioms, and leave room for translations to grow about 30%. Put new strings in the product's translation files when it has them.

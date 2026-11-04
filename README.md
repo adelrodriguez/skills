@@ -63,7 +63,8 @@ dependencies:
 Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, Cursor, or OpenCode. Some skills need more:
 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
-- **Subagents.** `code-review`, `council-review`, and `codebase-design` start other agents, so the agent must be able to run subagents. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
+- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
+- **A browser tool.** `interface-design`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
 - **T3 Code.** `housekeeping` cleans up T3 Code worktrees and threads.
@@ -78,10 +79,14 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `comment` | Posts a pull request or issue comment that says an agent wrote it | `gh`, `unslop`, `upload`, `monitor` |
 | `consistency` | Applies one pattern to every matching place in a scope, after a dry run | `codebase-design` |
 | `council-review` | Runs `code-review` with several reviewers, which can be different models, and compares their scores | Subagents, `code-review` |
+| `design-context` | Records the product in `PRODUCT.md` and the visual system in `DESIGN.md`, and asks only what the code can't answer | None |
+| `design-review` | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `interface-design` |
 | `full-send` | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
 | `full-stop` | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
+| `harden-ui` | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
 | `housekeeping` | Cleans up old agent worktrees and temp files across the machine, after a dry run | T3 Code, `gh` |
 | `how` | Explains how a subsystem works, or where code belongs, from the source | None |
+| `interface-design` | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
 | `issue` | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
 | `janitor` | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, T3 Code for other sessions |
 | `maintenance` | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |
@@ -101,7 +106,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `writing-changesets` | Writes changesets for the parts of a diff that users notice | `writing-documentation`, `unslop` |
 | `writing-documentation` | Writes and reorganizes documentation by the four [Diátaxis](https://diataxis.fr) types | `unslop` |
 | `writing-for-agents` | Writes skills and `AGENTS.md` files that agents follow the same way every run | `writing-documentation`, `restraint`, `unslop` |
-| `writing-for-humans` | Writes product and marketing copy without filler or sales language | `restraint`, `unslop`, [`break-ui`](https://github.com/emilkowalski/skills) |
+| `writing-for-humans` | Writes product and marketing copy without filler or sales language | `restraint`, `unslop`, `harden-ui` |
 
 ## Credits
 
@@ -113,6 +118,10 @@ Many of these skills started as someone else's. Each `SKILL.md` links its source
 - [blader/humanizer](https://github.com/blader/humanizer)
 - [Diátaxis](https://diataxis.fr)
 - [Less is more](https://jakub.kr/writing/less-is-more) by Jakub Krehel
+- [pbakaus/impeccable](https://github.com/pbakaus/impeccable)
+- [anthropics/skills](https://github.com/anthropics/skills)
+- [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill)
+- [emilkowalski/skills](https://github.com/emilkowalski/skills)
 
 ## License
 
