@@ -23,7 +23,8 @@ What a break looks like, its usual cause, and its fix. Find the row that matches
 | Diacritics or tall scripts clipped at the top or bottom | A tight `line-height` with `overflow: hidden` | A looser `line-height`, or no clipping on text boxes |
 | A broken-image icon in an avatar | No `onError` fallback | Fall back to initials, and use `object-fit: cover` for any aspect ratio |
 | Truncated text that no one can read in full | `text-overflow: ellipsis` and nothing else | A `title` attribute or tooltip, and the full value in a detail view |
-| Raw `<b>`, `&amp;`, or `**text**` on screen | Escaping at the wrong layer | Escape once, at render. Never pass user data to `dangerouslySetInnerHTML`. |
+| `&amp;amp;` or `&lt;b&gt;` on screen where the user typed `&` or `<b>` | Text escaped twice | Escape once, at render |
+| Text a user typed renders as bold, a link, or other markup, or a script runs | User data rendered as HTML or Markdown | Render user data as text, and never pass it to `dangerouslySetInnerHTML`. Typed markup such as `**bold**` showing literally is correct. |
 | Icons and padding on the wrong side in RTL | Physical properties such as `margin-left` | Logical properties such as `margin-inline-start`, and mirrored directional icons |
 | Scrolling 1,000 rows stutters | Every row rendered | Virtualize or paginate, and say which |
 
