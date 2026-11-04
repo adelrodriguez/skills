@@ -30,7 +30,7 @@ Ask the user only about gaps that would change future design decisions. Ask at m
 
 Do not ask about colors, fonts, or style. If the user volunteers a visual constraint, record it under "Brand commitments". If no one can answer, write the facts you inferred and mark each one as inferred.
 
-Use these sections, and omit any section that has no confirmed facts:
+Use these sections, and omit any section that has neither confirmed nor inferred facts:
 
 ```markdown
 # Product
@@ -69,11 +69,11 @@ Finish when `PRODUCT.md` exists and every statement in it is either confirmed or
 Follow the [DESIGN.md format](https://github.com/google-labs-code/design.md/blob/main/docs/spec.md): YAML front matter with the tokens, then these sections in order: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, and Do's and Don'ts. Omit a section that does not apply.
 
 - **Existing look:** Extract the tokens from the code, such as CSS custom properties, the Tailwind theme, or token files. Keep the project's own token names and color formats. Then ask the user to describe the look's personality in a few words and what it must never become, and write the prose from their answer.
-- **New look:** Write `DESIGN.md` only from a plan the user approved in `interface-design`.
+- **New look:** Write `DESIGN.md` only from a plan the user approved in `interface-design`. If no plan is approved yet, skip this step and say that `DESIGN.md` waits for the plan.
 
 Under "Do's and Don'ts", record each direction the user rejected and why, so that a later session does not propose it again.
 
-Finish when every token in `DESIGN.md` exists in the code or, for a new look, matches the approved plan.
+Finish when every token in `DESIGN.md` exists in the code or matches the approved plan, or when you skipped the step because no plan is approved yet.
 
 ## Check the context
 

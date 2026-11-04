@@ -48,14 +48,14 @@ Finish when every catalog row that applies and every case above has a fixture or
 
 ## Add the switch
 
-Add a segmented control with one position per case: Demo, Worst case, Empty, One, 1,000 rows, Error, Slow, Offline, and No permission. Leave out the positions the component cannot reach. Swap the case at the data boundary.
+Add a segmented control with one position per case you built: Demo, Worst case, Empty, One, 1,000 rows, one position for each error response, such as Error 403 and Error 500, Slow, Offline, and one position for each denied role. Swap the case at the data boundary.
 
 - **In a project with a dev server:** Read a URL parameter, such as `?case=worst`, where the fixture or mock is chosen, so that a reload keeps the selection.
 - **For a standalone component:** Write one self-contained HTML file with the component and every case inline.
 
 Fix the switch at the bottom center of the viewport. Style it plainly in gray with the system font, and switch cases without animation, because it is not part of the design under test.
 
-Finish when each position renders its case and a reload keeps the selected position.
+Finish when every case you built has its own position, each position renders its case, and a reload keeps the selected position.
 
 ## Break it
 

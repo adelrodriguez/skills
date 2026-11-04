@@ -29,7 +29,7 @@ Other skills own parts of the work:
 
 Read `PRODUCT.md` and `DESIGN.md` when they exist. Read the code of the target and the screens around it, including its tokens, components, and assets. Look at the current render at the widths it ships at. When the app cannot run, use committed screenshots or visual-regression images, and check that they match the current code.
 
-If `PRODUCT.md` is missing and the work is a new surface or a redesign, run `design-context` first. A narrow change to existing code can go ahead without it.
+If `PRODUCT.md` is missing and the work is a new surface or a redesign, run `design-context` first to write it. `DESIGN.md` for a new look waits until the user approves the plan. A narrow change to existing code can go ahead without it.
 
 The brief wins. Follow every font, color, era, material, and reference that the user or `DESIGN.md` pins, even when it matches a default in [`references/tells.md`](references/tells.md).
 

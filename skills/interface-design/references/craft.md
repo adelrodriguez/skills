@@ -58,7 +58,7 @@ Rules for building an interface. The checks apply to every screenshot. The secti
 ## Components
 
 - Decide the button shape once: square-cornered or fully round.
-- Give the navigation a wordmark, three to five plain links, and one action.
+- On Persuade, Read, and Experience surfaces, give the navigation a wordmark, three to five plain links, and one action. Operate surfaces use the shell in `app-screens.md`.
 - Use a modal only when the task needs an interruption or protected focus.
 - Let dropdowns and popovers escape their container through `<dialog>`, the popover API, or a portal, so that an `overflow: hidden` ancestor cannot clip them.
 - Check CSS specificity where a class selector and an element selector set the same spacing, because one silently cancels the other.
