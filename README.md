@@ -63,7 +63,7 @@ dependencies:
 Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, Cursor, or OpenCode. Some skills need more:
 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
-- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
+- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
 - **A browser tool.** `interface-design`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
@@ -84,6 +84,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `full-send` | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
 | `full-stop` | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
 | `harden-ui` | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
+| `hillclimb` | Turns a goal into a score and target, then raises the score one measured round at a time and keeps only the rounds that improve it | `pr`, `council-review` for judged hills |
 | `housekeeping` | Cleans up old agent worktrees and temp files across the machine, after a dry run | T3 Code, `gh` |
 | `how` | Explains how a subsystem works, or where code belongs, from the source | None |
 | `interface-design` | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
@@ -117,6 +118,7 @@ Many of these skills started as someone else's. Each `SKILL.md` links its source
 - [mattpocock/skills](https://github.com/mattpocock/skills)
 - [blader/humanizer](https://github.com/blader/humanizer)
 - [Diátaxis](https://diataxis.fr)
+- [Agents sucked at UI (until today)](https://youtu.be/xq0eB8vxeqk) by Theo Browne
 - [Less is more](https://jakub.kr/writing/less-is-more) by Jakub Krehel
 - [pbakaus/impeccable](https://github.com/pbakaus/impeccable)
 - [anthropics/skills](https://github.com/anthropics/skills)
