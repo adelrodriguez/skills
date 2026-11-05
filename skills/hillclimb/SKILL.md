@@ -67,11 +67,11 @@ A change must raise the score by improving the goal. Revert any change that rais
 
 Stop when the first of these happens:
 
-- The score meets the target in two measurements in a row. For a judged hill, every judge meets it in one round, and a second round agrees.
+- The last kept version meets the target and passes every guardrail in two measurements in a row. A round that was reverted does not count, even when its score met the target. For a judged hill, every judge's scores for the kept version meet the target in one round, and a second round agrees.
 - The climb reaches the budget.
 - Three rounds in a row are reverted. Report the plateau and the ideas you tried.
 
-Do not lower the target to finish. When the user adds a direction during the climb, such as "too grayscale, bring back color", add it to the spec as a guardrail or rubric note and continue.
+Do not lower the target to finish. When the user adds a direction during the climb, such as "too grayscale, bring back color", add it to the spec as a guardrail or rubric note. Then rebuild the archive with the same `tar -cf` command from setup, so step 3 does not undo the user's change. Measure the last kept version again under the new spec before the next round, and continue.
 
 ## Hand back the result
 
