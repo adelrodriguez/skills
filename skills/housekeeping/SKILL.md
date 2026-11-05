@@ -31,7 +31,7 @@ For each worktree, record:
 - Its path, branch, and last commit date.
 - Whether it has uncommitted or untracked changes, from `git -C <worktree> status --porcelain`.
 - Whether its commits are pushed, from `git -C <worktree> log --oneline @{upstream}..HEAD`. When the upstream branch is gone, count a commit as pushed when it is the PR's `headRefOid` or an ancestor of it, because a squash merge leaves the branch's commits on no remote branch.
-- The state of its branch's PR. Run `gh pr list --state all --limit 2000 --json number,state,url,headRefName,headRefOid` once per repository, and match each worktree's branch to `headRefName`.
+- The state of its branch's PR. Run `gh pr list --state all --limit 2000 --json number,state,url,headRefName,headRefOid` once per repository, and match each worktree's branch to `headRefName`. The list holds only the newest 2000 PRs, so look up each branch without a match with `gh pr list --head <branch> --state all --json number,state,url,headRefOid`.
 - Whether a T3 thread still uses it: a thread whose `worktreePath` is the worktree, and that is neither archived nor settled. `t3_thread_list` does not return `worktreePath`, so read it from T3's state database without changing it:
 
   ```bash
@@ -52,7 +52,7 @@ The step is done when every worktree has all six values and every unlisted folde
 
 Put each worktree in the first of these groups that matches:
 
-1. **Keep.** An active thread uses it, its PR is open, or its last commit is from the last 7 days.
+1. **Keep.** An active thread uses it, its PR is open, its last commit is from the last 7 days, or its thread or PR state could not be read.
 2. **Remove.** It has no uncommitted changes and no unpushed commits, and its PR is merged or closed, or its branch is gone from the remote.
 3. **Ask.** Every other worktree.
 
@@ -67,7 +67,9 @@ When the two hashes match and the worktree has no uncommitted changes, mark it a
 
 When the user is short on disk space, also mark each keep worktree that is kept only for its recent commit and would otherwise be in the remove group.
 
-The step is done when every worktree is in exactly one group, every unlisted folder is in the ask group, and every ask worktree with unpushed commits is checked against main.
+Put each unlisted folder that an active thread uses in the keep group, and every other unlisted folder in the ask group.
+
+The step is done when every worktree and every unlisted folder is in exactly one group, and every ask worktree with unpushed commits is checked against main.
 
 ## Survey the temp files
 
@@ -166,5 +168,7 @@ The step is done when every build cache in the remove group is gone or reported.
 - `git worktree list` in each repository shows no missing paths.
 
 ## Return the result
+
+When a source could not be read, such as T3's state database or `gh`, say so on the first line of the result, and name the worktrees you kept because of it.
 
 Return the number of worktrees, unlisted folders, temp entries, and build caches removed. Give the disk space freed as the change in `df -k /`, because `du` counts shared blocks. Then list the worktrees kept from the ask group, the ones git refused to remove, and the branches `branch -d` refused, with the reason.
