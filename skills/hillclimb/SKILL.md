@@ -67,7 +67,7 @@ A change must raise the score by improving the goal. Revert any change that rais
 
 Stop when the first of these happens:
 
-- The last kept version meets the target and passes every guardrail in two measurements in a row. A round that was reverted does not count, even when its score met the target. For a judged hill, every judge's scores for the kept version meet the target in one round, and a second round agrees.
+- The last kept version meets the target and passes every guardrail in two measurements in a row. When a kept round meets the target, measure the same commit again with no change. That confirmation is not a round, so the keep rule does not apply to it, and it adds a log row with the outcome `confirmation`. A round that was reverted does not count, even when its score met the target. For a judged hill, every judge's scores for the kept version meet the target in one round, and a confirmation round on the same commit agrees.
 - The climb reaches the budget.
 - Three rounds in a row are reverted. Report the plateau and the ideas you tried.
 
