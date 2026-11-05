@@ -88,9 +88,9 @@ The step is done when every entry is in exactly one group.
 
 ## Survey the build caches
 
-In each worktree that stays, find the folders that a build tool regenerates, such as `apps/*/.next`, `.output`, and `ios/build`. For each folder, record its size and whether a process has it open, from `lsof +D <folder>`.
+In each worktree that stays, find the folders that a build tool regenerates, such as `apps/*/.next`, `.output`, and `ios/build`. For each folder, record its size, whether a process has it open, from `lsof +D <folder>`, and whether a process runs from its worktree, from the paths that `lsof -d cwd -Fn` prints. A dev server can depend on its `.next` folder without holding a file in it open.
 
-Put each folder in the remove group when no process has it open, and in the keep group otherwise. Leave `node_modules` out. pnpm on macOS can clone its files from the store, so deleting `node_modules` may free much less than `du` shows, and `pnpm install` has to restore it.
+Put each folder in the remove group when no process has it open or runs from its worktree, and in the keep group otherwise. Leave `node_modules` out. pnpm on macOS can clone its files from the store, so deleting `node_modules` may free much less than `du` shows, and `pnpm install` has to restore it.
 
 The step is done when every build cache folder is in exactly one group.
 
@@ -132,7 +132,7 @@ git -C <repo> branch -d <branch>
 
 When the user names an unlisted folder, delete it by its literal path with `rm -r -- <folder>`, because git does not list the folder and cannot remove it.
 
-The step is done when every agreed worktree is removed, every named unlisted folder is gone, and every repository is pruned.
+The step is done when every agreed worktree is removed or reported, every named unlisted folder is gone, and every repository is pruned.
 
 ## Remove the temp files
 
@@ -148,7 +148,7 @@ The step is done when every temp entry in the remove group is gone or reported.
 
 ## Remove the build caches
 
-Remove the worktrees first, because removing a worktree also deletes its build caches. Then check each remaining build cache with `lsof +D <folder>` again, and delete it by its literal path from the dry run:
+Remove the worktrees first, because removing a worktree also deletes its build caches. Then repeat both process checks for each remaining build cache, and delete it by its literal path from the dry run:
 
 ```bash
 rm -r -- <folder>
