@@ -63,6 +63,7 @@ dependencies:
 Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, Cursor, or OpenCode. Some skills need more:
 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
+- **Boat.** `boat` needs the [Boat CLI](https://docs.boat.dev/quickstart), a signed-in account with sandbox access, and `jq` for its shell examples. Integrated agents also need configured model access.
 - **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
 - **A browser tool.** `interface-design`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
@@ -74,6 +75,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 
 | Skill | What it does | Needs |
 |---|---|---|
+| `boat` | Selects focused procedures for isolated execution, parallel agents, hosted services, containers, and Linux desktop work | Boat CLI, `jq` |
 | `code-review` | Has an independent reviewer find issues, then checks and fixes them, for up to three rounds | Subagents, `gh` |
 | `codebase-design` | Designs module interfaces, APIs, and folder layout from the callers outward, and compares at least two designs | Subagents, `testing` |
 | `comment` | Posts a pull request or issue comment that says an agent wrote it | `gh`, `unslop`, `upload`, `monitor` |
@@ -114,6 +116,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 Many of these skills started as someone else's. Each `SKILL.md` links its sources under `metadata.reference`:
 
 - [t3dotgg/tstack](https://github.com/t3dotgg/tstack)
+- [Boat documentation](https://docs.boat.dev/ai-tools) and [cloud-sandbox-vm-skills](https://github.com/ariana-dot-dev/cloud-sandbox-vm-skills)
 - [cursor/plugins](https://github.com/cursor/plugins)
 - [mattpocock/skills](https://github.com/mattpocock/skills)
 - [blader/humanizer](https://github.com/blader/humanizer)
