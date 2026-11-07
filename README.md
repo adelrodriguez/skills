@@ -108,7 +108,7 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `sessions` | ✓ | Finds and reads agent sessions in T3 Code, Claude Code, Codex, and OpenCode, including T3 Code threads on linked machines, and matches worktrees and processes to them | None |
 | `takeover` | ✓ | Finishes someone else's pull request, branch, or thread on its own branch, and keeps their credit | `gh`, `refresh`, `pr`, `monitor`, T3 Code for threads |
 | `testing` | ✓ | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |
-| `triage` | ✓ | Checks whether issues still apply, updates readiness, effort, and priority, and surfaces actionable bugs without duplicating open PRs | `gh`, `sessions`, `comment`, `issue`, `next-task` |
+| `triage` | ✓ | Assesses issues, finds duplicates, proposes project trackers for approval, and recommends actionable work | `gh`, `sessions`, `comment`, `issue`, `next-task` |
 | `unslop` | ✓ | Rewrites text to remove filler, jargon, and patterns that sound generated | My instructions |
 | `upload` | ✓ | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `FILE_UPLOAD_*` environment variables |
 | `what` |  | Restates the last message in plain language | `unslop` |
