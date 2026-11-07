@@ -1,12 +1,11 @@
 ---
 name: maintenance
-description: Upgrade dependencies, replace old patterns, make code consistent, and prune tests across a repository.
-disable-model-invocation: true
+description: Use when the user asks for a repository maintenance pass spanning upgrades, consistency, and pruning.
 ---
 
 # Maintain a repository
 
-Run a full maintenance pass on a repository that has drifted: upgrade its dependencies, replace old patterns, make the code consistent, and prune its tests. This skill orders the work and chooses what to do. The `modernize`, `consistency`, and `test-pruning` skills do each part.
+Run a full maintenance pass on a repository that has drifted: prune unused material, upgrade its dependencies, replace old patterns, make the code consistent, and prune its tests. This skill orders the work and chooses what to do. The `prune`, `modernize`, and `consistency` skills do each part.
 
 ## Set the scope
 
@@ -18,7 +17,8 @@ The step is done when the scope is a repository and a list of parts.
 
 Read the repository's `AGENTS.md`, `CODING_STANDARDS.md`, and the last few months of merged PRs. Then collect the candidates for each part:
 
-- **Dependencies.** The outdated packages.
+- **Prune.** Candidates from every non-test target in the `prune` skill.
+- **Dependencies.** The outdated packages, excluding packages planned for removal.
 - **Old patterns.** Code that predates the repository's current standards, or that the repository wrote for itself where a library it uses now ships the primitive. Search for patterns the standards forbid, code that recent PRs replaced in some places but not others, and deprecated APIs.
 - **Consistency.** Places where the repository solves the same problem in more than one way, and places where it differs from my other repositories without a reason.
 - **Tests.** The size and run time of the suite, and folders that look duplicated or weak.
@@ -29,10 +29,11 @@ The step is done when every part in the scope has a list of candidates, or a not
 
 Order the parts:
 
-1. **Dependencies,** because new versions ship primitives that change which old patterns to replace.
-2. **Old patterns,** one pattern at a time.
-3. **Consistency,** one pattern at a time.
-4. **Tests,** last, so pruning does not remove coverage the refactors relied on.
+1. **Prune,** with every target except tests, so upgrades do not update packages that will be removed.
+2. **Dependencies,** because new versions ship primitives that change which old patterns to replace.
+3. **Old patterns,** one pattern at a time.
+4. **Consistency,** one pattern at a time.
+5. **Tests,** last, so test pruning does not remove coverage the refactors relied on.
 
 Within old patterns and consistency, rank each pattern by the number of sites and how often it causes bugs or review comments. Drop a pattern that touches only one or two sites, and list it in the result instead.
 
@@ -44,9 +45,10 @@ The step is done when the user agrees.
 
 Run each part on its own branch, and file its PR with the `pr` skill before you start the next part:
 
+- **Prune:** follow the `prune` skill with every target except `tests`.
 - **Dependencies:** follow the `modernize` skill.
 - **Old patterns** and **Consistency:** follow the `consistency` skill once per pattern. Several patterns may share a PR when each is in its own commit.
-- **Tests:** follow the `test-pruning` skill.
+- **Tests:** follow the `prune` skill with only the `tests` target.
 
 Base each part on the previous part's branch when it depends on it, and stack the PRs. Otherwise base it on the default branch.
 

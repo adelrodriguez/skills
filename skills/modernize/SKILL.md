@@ -1,7 +1,6 @@
 ---
 name: modernize
-description: Upgrade a repository's dependencies and adopt what the new versions change.
-disable-model-invocation: true
+description: Use when upgrading a repository's dependencies and adopting the changes in the new versions.
 ---
 
 # Upgrade the dependencies
