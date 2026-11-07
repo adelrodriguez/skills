@@ -15,7 +15,7 @@ To add a harness, copy a section, fill in every field, and verify each command a
 
 ## T3 Code
 
-T3 Code runs other harnesses, such as Claude Code and Codex, as threads. It holds every thread from every provider, so use it first when it is present.
+T3 Code runs other harnesses, such as Claude Code, Codex, and OpenCode, as threads. It holds every thread from every provider, so use it first when it is present.
 
 - **Present when:** the `t3_*` tools are available, such as `t3_thread_read`, or `T3CODE_THREAD_ID` is set.
 - **Current session:** the thread ID in `T3CODE_THREAD_ID`.
@@ -41,3 +41,18 @@ T3 Code runs other harnesses, such as Claude Code and Codex, as threads. It hold
 - **Read a session:** read the `.jsonl` file with `jq`, one event per line. The conversation and tool calls are `response_item` events, and the turn boundaries are `event_msg` events.
 - **Other machines:** none.
 - **Global instructions:** `~/.codex/AGENTS.md`, and the installed skills in `~/.codex/skills/`, which link to `~/.agents/skills/`.
+
+## OpenCode
+
+- **Present when:** `~/.local/share/opencode/opencode.db` exists.
+- **Current session:** the newest session in `opencode session list --format json` whose `directory` is the current working directory.
+- **List sessions:** run `opencode session list --format json -n <count>` from a directory inside the project. It returns each top-level session's `id`, `title`, and `directory`, including sessions in the project's worktrees. The command skips child sessions, such as subagents, so find them in the database without changing it:
+
+  ```bash
+  sqlite3 -readonly "file:$HOME/.local/share/opencode/opencode.db?mode=ro" \
+    "select id, title from session where parent_id = '<session-id>'"
+  ```
+
+- **Read a session:** `opencode session export <session-id>` prints one JSON object with `info` and `messages`. Each message has a `type`, such as `user`, `assistant`, or `compaction`, and an assistant message lists its reasoning and `tool` calls in `content`, with any `error`. A long session can export tens of megabytes, so write the export to a file and filter it with `jq`.
+- **Other machines:** none.
+- **Global instructions:** `~/.config/opencode/AGENTS.md`, and the installed skills in `~/.config/opencode/skills/`.
