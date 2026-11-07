@@ -70,7 +70,7 @@ Prune on every change, and on its own when the user asks for an audit. Delete a 
 - It keeps flagging code that is correct.
 - It repeats `AGENTS.md`, the global instructions, or another rule.
 
-Group rules by domain as the file grows. Once the file passes about 1,000 lines, move whole domain sections into `docs/` and leave a one-line pointer in their place.
+Once the file passes about 1,000 lines, move whole domain sections into `docs/` and leave a one-line pointer in their place.
 
 Finish when you have checked every rule against the four conditions.
 
