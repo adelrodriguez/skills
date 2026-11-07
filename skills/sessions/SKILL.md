@@ -14,7 +14,7 @@ A harness is the program that runs an agent and stores its sessions, such as T3 
 - **Other machines:** how to reach sessions on other machines, when the harness can.
 - **Global instructions:** where the harness loads the user's global instructions from.
 
-Search every harness that is present, not only the one running the current session, because the same work often spans several.
+Search every harness that is present, not only the one running the current session, because the same work often spans several. One harness's search can miss a session that another harness's logs hold, so search the other harnesses' logs for the branch or PR too, such as with `grep -l <branch> ~/.claude/projects/*/*.jsonl`.
 
 To add a harness, copy a section, fill in every field, and verify each command against a real session before you write it down.
 
@@ -38,7 +38,7 @@ To add a harness, copy a section, fill in every field, and verify each command a
 T3 Code runs other harnesses, such as Claude Code, Codex, and OpenCode, as threads. It holds every thread from every provider, so use it first when it is present.
 
 - **Present when:** the `t3_*` tools are available, such as `t3_thread_read`, or `T3CODE_THREAD_ID` is set.
-- **Current session:** the thread ID in `T3CODE_THREAD_ID`.
+- **Current session:** the thread ID from `echo $T3CODE_THREAD_ID`. Read it in the shell first, because tool arguments do not expand environment variables.
 - **List sessions:** `t3_thread_search` with a title, branch, PR, or project, and `t3_thread_list` with `allProjects: true` or a `projectId` from `t3_project_list`. `t3_thread_search` skips subagent threads and is not exhaustive, so use `t3_thread_list` with `includeSubagents: true` to find a thread's children by `parentThreadId`. The thread record holds `branch`, `worktreePath`, `pullRequests`, `providerInstanceId`, and `model`.
 - **Read a session:** `t3_thread_read` with a low `limit` and `maxCharsPerItem`, paging with `afterPosition`. Use `view: "activity"` to see tool calls and errors, and `view: "messages"` for the conversation only.
 - **Other machines:** `t3_environment_links` lists the linked machines and whether each is `reachable`. Pass a machine's `environmentId` to `t3_project_list`, `t3_thread_list`, `t3_thread_search`, and `t3_thread_read` to act there. Thread and project IDs belong to their machine.
