@@ -4,7 +4,7 @@
 
 A target is a file or check that a finding changes. Edit a target in the repository that owns its source of truth, never in an installed copy, because the next install overwrites the copy. A missing target is still a valid target. Propose creating it with the skill named in its row.
 
-| Target | What belongs there | Source of truth | Create it with |
+| Target | What belongs there | Source of truth | Skill that creates it |
 |---|---|---|---|
 | Global rules | Rules that apply in every project, such as the files in `~/.claude/rules/` and `~/.codex/AGENTS.md` | The `adelrodriguez/instructions` repository | `writing-for-agents` |
 | Skills | A workflow the agent follows for one kind of task | The repository the skill was installed from: `adelrodriguez/skills` for a skill in its README, otherwise the skill's `metadata.reference` or its APM dependency | `writing-for-agents` |
