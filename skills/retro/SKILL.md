@@ -9,7 +9,7 @@ metadata:
 
 # Run a retrospective
 
-Find what made agent sessions slow, wrong, or wasteful, and propose changes to the agent's environment so that the next session gets it right the first time. The environment is everything the agent reads or runs besides the task itself: global instructions, skills, the repository's agent documents, checks, and tools. Propose changes only. Each accepted change ships later as its own pull request in the repository that owns the file.
+Find what made agent sessions slow, wrong, or wasteful, and propose changes to the agent's environment so that the next session gets it right the first time. The environment is everything the agent reads or runs besides the task itself: global instructions, skills, the repository's agent documents, checks, and tools. Propose changes only. Each accepted change ships later as its own pull request in the repository that owns the file. Apply an accepted change to `CODING_STANDARDS.md` or to a check with the `coding-standards` skill.
 
 Read the `writing-for-agents` skill before you write any proposed change to an agent document.
 
@@ -68,9 +68,11 @@ Go through each category in "Candidate categories" in [`references/targets.md`](
 - The proposed change, written as the exact text, check, or script it adds or removes.
 - What the change would have saved: the turns, tool calls, review rounds, or commits it would have prevented.
 
+For each candidate whose target is `CODING_STANDARDS.md` or a check, follow the "Collect the evidence" and "Sort each candidate" steps of the `coding-standards` skill, and record whether it becomes a check or a rule.
+
 When a rule already exists but the agent did not follow it, the finding is about its trigger or its location, not a new rule. When the same fix applies to other repositories that use the same convention, name them.
 
-The step is done when every category is checked and every candidate has evidence and a target.
+The step is done when every category is checked, every candidate has evidence and a target, and every coding candidate is sorted as a check or a rule.
 
 ## Rank the candidates
 
@@ -86,7 +88,7 @@ The step is done when each remaining candidate has a rank and no two share a cau
 - Every candidate cites a session event or a commit.
 - Every rework in the history has a cause or a note.
 - Every target is in the repository that owns its source of truth, not an installed copy.
-- A mechanical mistake has a check as its target, not a written rule.
+- Every coding candidate was sorted with the `coding-standards` skill.
 - No candidate repeats a rule that another skill already owns.
 
 ## Return the report
