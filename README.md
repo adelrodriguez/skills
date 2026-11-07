@@ -76,6 +76,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 |---|---|---|
 | `code-review` | Has an independent reviewer find issues, then checks and fixes them, for up to three rounds | Subagents, `gh` |
 | `codebase-design` | Designs module interfaces, APIs, and folder layout from the callers outward, and compares at least two designs | Subagents, `testing` |
+| `coding-standards` | Records the coding rules that no check can enforce in `CODING_STANDARDS.md`, each backed by a real mistake, and prunes stale ones | `writing-for-agents`, `unslop` |
 | `comment` | Posts a pull request or issue comment that says an agent wrote it | `gh`, `unslop`, `upload`, `monitor` |
 | `consistency` | Applies one pattern to every matching place in a scope, after a dry run | `codebase-design` |
 | `council-review` | Runs `code-review` with several reviewers, which can be different models, and compares their scores | Subagents, `code-review` |
