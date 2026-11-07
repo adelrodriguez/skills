@@ -20,7 +20,7 @@ user_invoked = {
 
 requirements = readme.split("## Requirements", 1)[1].split("\n## ", 1)[0]
 table = readme.split("## Skills", 1)[1].split("\n## ", 1)[0]
-rows = re.findall(r"^\| `([a-z0-9-]+)` \| ([^|]+) \|", table, re.M)
+rows = re.findall(r"^\| `([a-z0-9-]+)` \|([^|]*)\|", table, re.M)
 listed = [name for name, _ in rows]
 
 errors = []
@@ -29,10 +29,11 @@ for name in sorted(skills.keys() - set(listed)):
     errors.append(f"README.md: the Skills table has no row for `{name}`")
 for name in sorted(set(listed) - skills.keys()):
     errors.append(f"README.md: the Skills table lists `{name}`, which is not a folder in skills/")
-for name, invoked_by in rows:
-    expected = "You" if name in user_invoked else "You or the agent"
-    if name in skills and invoked_by != expected:
-        errors.append(f"README.md: write \"{expected}\" under Invoked by for `{name}`, to match its disable-model-invocation setting")
+for name, agent_invocation in rows:
+    expected = "" if name in user_invoked else "✓"
+    if name in skills and agent_invocation.strip() != expected:
+        mark = "a ✓" if expected else "no ✓"
+        errors.append(f"README.md: put {mark} under Agent invocation for `{name}`, to match its disable-model-invocation setting")
 if listed != sorted(listed):
     errors.append("README.md: sort the Skills table by skill name")
 
