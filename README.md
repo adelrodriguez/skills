@@ -73,46 +73,48 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 
 ## Skills
 
-| Skill | What it does | Needs |
-|---|---|---|
-| `boat` | Selects focused procedures for isolated execution, parallel agents, hosted services, containers, and Linux desktop work | Boat CLI, `jq` |
-| `code-review` | Has an independent reviewer find issues, then checks and fixes them, for up to three rounds | Subagents, `gh` |
-| `codebase-design` | Designs module interfaces, APIs, and folder layout from the callers outward, and compares at least two designs | Subagents, `testing` |
-| `coding-standards` | Records the coding rules that no check can enforce in `CODING_STANDARDS.md`, each backed by a real mistake, and prunes stale ones | `writing-for-agents`, `unslop` |
-| `comment` | Posts a pull request or issue comment that says an agent wrote it | `gh`, `unslop`, `upload`, `monitor` |
-| `consistency` | Applies one pattern to every matching place in a scope, after a dry run | `codebase-design` |
-| `council-review` | Runs `code-review` with several reviewers, which can be different models, and compares their scores | Subagents, `code-review` |
-| `design-context` | Records the product in `PRODUCT.md` and the visual system in `DESIGN.md`, and asks only what the code can't answer | None |
-| `design-review` | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `interface-design` |
-| `full-send` | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
-| `full-stop` | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
-| `harden-ui` | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
-| `hillclimb` | Turns a goal into a score and target, then raises the score one measured round at a time and keeps only the rounds that improve it | `pr`, `council-review` for judged hills |
-| `housekeeping` | Cleans up old agent worktrees, temp files, and build caches across the machine, after a dry run | T3 Code, `gh`, `sessions` |
-| `how` | Explains how a subsystem works, or where code belongs, from the source | None |
-| `interface-design` | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
-| `issue` | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
-| `janitor` | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, `sessions` |
-| `maintenance` | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |
-| `modernize` | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
-| `monitor` | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `comment`, `upload` |
-| `next-task` | Recommends the one unblocked issue to do next | `gh` |
-| `pr` | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
-| `refresh` | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
-| `restraint` | Cuts additions down to what improves the user's outcome | None |
-| `retro` | Reviews agent sessions and the project's history, then proposes changes to instructions, skills, and checks | `gh`, `writing-for-agents`, `coding-standards`, `sessions` |
-| `sessions` | Finds and reads agent sessions in T3 Code, Claude Code, Codex, and OpenCode, including T3 Code threads on linked machines, and matches worktrees and processes to them | None |
-| `takeover` | Finishes someone else's pull request, branch, or thread on its own branch, and keeps their credit | `gh`, `refresh`, `pr`, `monitor`, T3 Code for threads |
-| `test-pruning` | Sorts every test into delete, strengthen, rewrite, or keep, and applies the changes | `testing` |
-| `testing` | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |
-| `unslop` | Rewrites text to remove filler, jargon, and patterns that sound generated | My instructions |
-| `upload` | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `FILE_UPLOAD_*` environment variables |
-| `what` | Restates the last message in plain language | `unslop` |
-| `why` | Investigates why code is shaped the way it is, from history, issues, and docs, and rates its confidence | `gh` |
-| `writing-changesets` | Writes changesets for the parts of a diff that users notice | `writing-documentation`, `unslop` |
-| `writing-documentation` | Writes and reorganizes documentation by the four [Diátaxis](https://diataxis.fr) types | `unslop` |
-| `writing-for-agents` | Writes skills and `AGENTS.md` files that agents follow the same way every run | `writing-documentation`, `restraint`, `unslop` |
-| `writing-for-humans` | Writes product and marketing copy without filler or sales language | `restraint`, `unslop`, `harden-ui` |
+The **Invoked by** column says who can start each skill. "You" means it starts only when you type its name, such as `/retro`. "You or the agent" means the agent also starts it on its own when a task calls for it.
+
+| Skill | Invoked by | What it does | Needs |
+|---|---|---|---|
+| `boat` | You or the agent | Selects focused procedures for isolated execution, parallel agents, hosted services, containers, and Linux desktop work | Boat CLI, `jq` |
+| `code-review` | You or the agent | Has an independent reviewer find issues, then checks and fixes them, for up to three rounds | Subagents, `gh` |
+| `codebase-design` | You or the agent | Designs module interfaces, APIs, and folder layout from the callers outward, and compares at least two designs | Subagents, `testing` |
+| `coding-standards` | You or the agent | Records the coding rules that no check can enforce in `CODING_STANDARDS.md`, each backed by a real mistake, and prunes stale ones | `writing-for-agents`, `unslop` |
+| `comment` | You or the agent | Posts a pull request or issue comment that says an agent wrote it | `gh`, `unslop`, `upload`, `monitor` |
+| `consistency` | You or the agent | Applies one pattern to every matching place in a scope, after a dry run | `codebase-design` |
+| `council-review` | You or the agent | Runs `code-review` with several reviewers, which can be different models, and compares their scores | Subagents, `code-review` |
+| `design-context` | You or the agent | Records the product in `PRODUCT.md` and the visual system in `DESIGN.md`, and asks only what the code can't answer | None |
+| `design-review` | You or the agent | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `interface-design` |
+| `full-send` | You or the agent | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
+| `full-stop` | You or the agent | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
+| `harden-ui` | You or the agent | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
+| `hillclimb` | You or the agent | Turns a goal into a score and target, then raises the score one measured round at a time and keeps only the rounds that improve it | `pr`, `council-review` for judged hills |
+| `housekeeping` | You | Cleans up old agent worktrees, temp files, and build caches across the machine, after a dry run | T3 Code, `gh`, `sessions` |
+| `how` | You | Explains how a subsystem works, or where code belongs, from the source | None |
+| `interface-design` | You or the agent | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
+| `issue` | You or the agent | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
+| `janitor` | You or the agent | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, `sessions` |
+| `maintenance` | You | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |
+| `modernize` | You | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
+| `monitor` | You or the agent | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `comment`, `upload` |
+| `next-task` | You or the agent | Recommends the one unblocked issue to do next | `gh` |
+| `pr` | You or the agent | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
+| `refresh` | You or the agent | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
+| `restraint` | You or the agent | Cuts additions down to what improves the user's outcome | None |
+| `retro` | You | Reviews agent sessions and the project's history, then proposes changes to instructions, skills, and checks | `gh`, `writing-for-agents`, `coding-standards`, `sessions` |
+| `sessions` | You or the agent | Finds and reads agent sessions in T3 Code, Claude Code, Codex, and OpenCode, including T3 Code threads on linked machines, and matches worktrees and processes to them | None |
+| `takeover` | You or the agent | Finishes someone else's pull request, branch, or thread on its own branch, and keeps their credit | `gh`, `refresh`, `pr`, `monitor`, T3 Code for threads |
+| `test-pruning` | You | Sorts every test into delete, strengthen, rewrite, or keep, and applies the changes | `testing` |
+| `testing` | You or the agent | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |
+| `unslop` | You or the agent | Rewrites text to remove filler, jargon, and patterns that sound generated | My instructions |
+| `upload` | You or the agent | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `FILE_UPLOAD_*` environment variables |
+| `what` | You | Restates the last message in plain language | `unslop` |
+| `why` | You | Investigates why code is shaped the way it is, from history, issues, and docs, and rates its confidence | `gh` |
+| `writing-changesets` | You or the agent | Writes changesets for the parts of a diff that users notice | `writing-documentation`, `unslop` |
+| `writing-documentation` | You or the agent | Writes and reorganizes documentation by the four [Diátaxis](https://diataxis.fr) types | `unslop` |
+| `writing-for-agents` | You or the agent | Writes skills and `AGENTS.md` files that agents follow the same way every run | `writing-documentation`, `restraint`, `unslop` |
+| `writing-for-humans` | You or the agent | Writes product and marketing copy without filler or sales language | `restraint`, `unslop`, `harden-ui` |
 
 ## Credits
 
