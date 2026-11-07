@@ -1,9 +1,14 @@
-# Harnesses
+---
+name: sessions
+description: Use when finding, listing, or reading agent sessions or threads, or matching a worktree or process to its session.
+---
 
-Each section describes one harness that stores agent sessions. Every section has the same fields:
+# Agent sessions
+
+A harness is the program that runs an agent and stores its sessions, such as T3 Code, Claude Code, Codex, or OpenCode. Each harness section below has the same fields:
 
 - **Present when:** the check that shows the harness is on this machine or in this session.
-- **Current session:** how to identify the session the retro runs in.
+- **Current session:** how to identify the session you run in.
 - **List sessions:** how to find sessions by project, branch, or date.
 - **Read a session:** how to read one session in full.
 - **Other machines:** how to reach sessions on other machines, when the harness can.
@@ -12,6 +17,21 @@ Each section describes one harness that stores agent sessions. Every section has
 Search every harness that is present, not only the one running the current session, because the same work often spans several.
 
 To add a harness, copy a section, fill in every field, and verify each command against a real session before you write it down.
+
+## Match a worktree or process to its session
+
+- **T3 Code worktree.** A worktree under `~/.t3/worktrees/` belongs to the thread whose `worktreePath` is that worktree. `t3_thread_list` does not return `worktreePath`, so read it from T3 Code's state database without changing it. This query prints the ID and worktree of each thread that is neither archived, deleted, nor settled:
+
+  ```bash
+  sqlite3 -readonly "file:$HOME/.t3/userdata/statev2.sqlite?mode=ro" \
+    "select payload_json from orchestration_v2_projection_threads where archived_at is null and deleted_at is null" |
+    jq -r 'select(.worktreePath != null and (.settledOverride == "active" or (.settledOverride == null and .settledAt == null))) | "\(.id) \(.worktreePath)"'
+  ```
+
+  A `settledOverride` of `"active"` means the user pinned the thread open, so it counts as unsettled even when `settledAt` is set. Subagent threads share their parent's worktree, and their IDs start with `thread:`. Read a thread's status with `t3_thread_read`.
+
+- **Process.** A process whose parent chain, from `ps -o ppid= -p <pid>`, leads to an agent process, such as `claude`, `codex`, or `opencode`, belongs to that agent's session. A process whose working directory, from `lsof -a -d cwd -p <pid>`, is a T3 Code worktree belongs to that worktree's thread. A process whose parent PID is 1 and whose working directory is an agent worktree is an orphan, because the agent that started it has exited.
+- **Other worktrees.** Find the sessions whose working directory is the worktree, from each harness's "List sessions" field.
 
 ## T3 Code
 

@@ -67,7 +67,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 - **A browser tool.** `interface-design`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
-- **T3 Code.** `housekeeping` cleans up T3 Code worktrees and threads. `retro` reads T3 Code threads, including those on linked machines, when T3 Code is present.
+- **T3 Code.** `housekeeping` cleans up T3 Code worktrees and threads. `sessions` reads T3 Code threads, including those on linked machines, when T3 Code is present.
 - **My instructions.** `unslop` applies the "Write clearly" rules from [adelrodriguez/instructions](https://github.com/adelrodriguez/instructions).
 
 ## Skills
@@ -86,11 +86,11 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `full-stop` | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
 | `harden-ui` | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
 | `hillclimb` | Turns a goal into a score and target, then raises the score one measured round at a time and keeps only the rounds that improve it | `pr`, `council-review` for judged hills |
-| `housekeeping` | Cleans up old agent worktrees, temp files, and build caches across the machine, after a dry run | T3 Code, `gh` |
+| `housekeeping` | Cleans up old agent worktrees, temp files, and build caches across the machine, after a dry run | T3 Code, `gh`, `sessions` |
 | `how` | Explains how a subsystem works, or where code belongs, from the source | None |
 | `interface-design` | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
 | `issue` | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
-| `janitor` | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, T3 Code for other sessions |
+| `janitor` | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, `sessions` |
 | `maintenance` | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |
 | `modernize` | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
 | `monitor` | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `comment`, `upload` |
@@ -98,7 +98,8 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 | `pr` | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
 | `refresh` | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
 | `restraint` | Cuts additions down to what improves the user's outcome | None |
-| `retro` | Reviews agent sessions and the project's history, then proposes changes to instructions, skills, and checks | `gh`, `writing-for-agents`, `coding-standards`, T3 Code for threads on linked machines |
+| `retro` | Reviews agent sessions and the project's history, then proposes changes to instructions, skills, and checks | `gh`, `writing-for-agents`, `coding-standards`, `sessions` |
+| `sessions` | Finds and reads agent sessions in T3 Code, Claude Code, Codex, and OpenCode, including T3 Code threads on linked machines, and matches worktrees and processes to them | None |
 | `takeover` | Finishes someone else's pull request, branch, or thread on its own branch, and keeps their credit | `gh`, `refresh`, `pr`, `monitor`, T3 Code for threads |
 | `test-pruning` | Sorts every test into delete, strengthen, rewrite, or keep, and applies the changes | `testing` |
 | `testing` | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |

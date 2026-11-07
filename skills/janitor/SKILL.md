@@ -48,11 +48,7 @@ The step is done when every item is listed with its PID, tab, device ID, path, o
 
 In your own scopes, confirm each process by PID with `ps -o pid,ppid,etime,command -p <pid>`, and check that its command and start time match a command that the thread ran within the scope. Confirm each file by its path and the command that created it.
 
-In other agents' scopes, tie each item to the session that started it:
-
-- A process whose parent chain leads to an agent process, such as `claude` or `codex`, belongs to that agent's session.
-- A process whose working directory is under `~/.t3/worktrees/` belongs to the thread whose `worktreePath` is that worktree. Find it with `t3_thread_list` in each project from `t3_project_list`.
-- A process whose parent PID is 1 and whose working directory is an agent worktree is an orphan. The agent that started it has exited.
+In other agents' scopes, tie each item to the session that started it, following "Match a worktree or process to its session" in the `sessions` skill.
 
 Record for each item its session and that session's status.
 
