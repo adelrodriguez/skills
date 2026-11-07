@@ -15,7 +15,7 @@ A target is a file or check that a finding changes. Edit a target in the reposit
 | Docs | Reference that an agent document points to | The repository's docs folder | `writing-documentation` |
 | Checks | Lint rules, type checks, tests, pre-commit hooks, and CI jobs | The repository's check config and CI workflows | `coding-standards`, which adds the check to the tools the repository already runs |
 | Tools | Scripts and CLIs that replace expensive tool calls | The skill's `scripts/` folder, or the repository's scripts | A script in the skill or repository |
-| Harness reference | How this skill finds and reads sessions | `references/harnesses.md` in this skill | This skill |
+| Harness reference | How agents find and read sessions in each harness | The `sessions` skill | `writing-for-agents` |
 
 ## Candidate categories
 
@@ -32,4 +32,4 @@ Each category lists its signal, which is what to look for in the sessions and hi
 | Steering bloat | An always-loaded file is long, holds coding rules, or holds lines that do not change what the agent does. A rule in `CODING_STANDARDS.md` meets a condition in the "Prune the file" step of the `coding-standards` skill | Move a coding rule to `CODING_STANDARDS.md` or a check, or delete the line or rule |
 | Tool economy | A tool call returned far more output than the agent used, or the agent repeated the same sequence of calls | A script, a narrower command in the skill, or a fix to the tool |
 | Information access | The agent lacked information it needed, such as dev server logs, a third-party service, or another machine's sessions | Read-only access, such as logs written to a file or a tool for the service |
-| Harness coverage | The retro could not read a harness, machine, or session store | `references/harnesses.md` in this skill |
+| Harness coverage | The retro could not read a harness, machine, or session store | The `sessions` skill |

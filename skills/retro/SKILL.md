@@ -15,11 +15,11 @@ Read the `writing-for-agents` skill before you write any proposed change to an a
 
 ## Find the harness
 
-Read [`references/harnesses.md`](references/harnesses.md), and detect every harness that the current session runs in, by the markers listed for each one. A session can run in more than one, such as Claude Code inside T3 Code. For each detected harness, record how to list and read sessions, which machines it reaches, and where its global instructions live.
+Use the `sessions` skill, and detect every harness that is present, by the markers listed for each one. A session can run in more than one, such as Claude Code inside T3 Code. For each detected harness, record how to list and read sessions, which machines it reaches, and where its global instructions live.
 
 When a harness reaches other machines, such as T3 Code's linked environments, list them and record which ones answer.
 
-When the session runs in a harness that the reference does not list, find its session store and add a section for it to `references/harnesses.md` in the same format, as one of the findings.
+When the session runs in a harness that the `sessions` skill does not list, find its session store and propose a section for it in the same format, as one of the findings.
 
 The step is done when every detected harness has a recorded session source, and every reachable machine is listed with its status.
 

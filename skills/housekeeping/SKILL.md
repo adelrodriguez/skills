@@ -32,16 +32,7 @@ For each worktree, record:
 - Whether it has uncommitted or untracked changes, from `git -C <worktree> status --porcelain`.
 - Whether its commits are pushed, from `git -C <worktree> log --oneline @{upstream}..HEAD`. When the upstream branch is gone, count a commit as pushed when it is the PR's `headRefOid` or an ancestor of it, because a squash merge leaves the branch's commits on no remote branch.
 - The state of its branch's PR. Run `gh pr list --state all --limit 2000 --json number,state,url,headRefName,headRefOid` once per repository, and match each worktree's branch to `headRefName`. The list holds only the newest 2000 PRs, so look up each branch without a match with `gh pr list --head <branch> --state all --json number,state,url,headRefOid`.
-- Whether a T3 thread still uses it: a thread whose `worktreePath` is the worktree, and that is neither archived nor settled. `t3_thread_list` does not return `worktreePath`, so read it from T3's state database without changing it:
-
-  ```bash
-  sqlite3 -readonly "file:$HOME/.t3/userdata/statev2.sqlite?mode=ro" \
-    "select payload_json from orchestration_v2_projection_threads where archived_at is null and deleted_at is null" |
-    jq -r 'select(.worktreePath != null and (.settledOverride == "active" or (.settledOverride == null and .settledAt == null))) | .worktreePath'
-  ```
-
-  A `settledOverride` of `"active"` means the user pinned the thread open, so it counts as unsettled even when `settledAt` is set.
-
+- Whether a T3 thread still uses it: a thread that is neither archived nor settled and whose `worktreePath` is the worktree. Find it with the T3 Code worktree query in "Match a worktree or process to its session" in the `sessions` skill.
 - Its size, from `du -sk`. Run one `du` per worktree in parallel, such as with `xargs -P 12 -n 1`, because one `du` over all worktrees can take longer than 10 minutes.
 
 Also list each folder under `~/.t3/worktrees/<repo>/` that no repository's `git worktree list` includes, such as a folder whose `.git` file points to a repository that no longer exists, or a folder with no `.git`. Record its size and whether a thread uses it.
