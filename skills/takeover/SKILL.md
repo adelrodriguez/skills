@@ -64,7 +64,13 @@ The step is done when `git log` on the local branch shows every original commit 
 
 Record `<original-head>` as `<old-head>`, and `git merge-base origin/<base> <original-head>` as `<old-base>`. Then follow these sections of the `refresh` skill on the local branch: "List what merged since", "Check for overlap", "Rebase the branch", and "Verify the refreshed PR".
 
-Check the source again before you continue, because its author may have pushed since you read it. Add any new commits to the local branch.
+Check the source again before you continue, because its author may have pushed since you read it. Fetch, then add only their new commits, so the commits you dropped while refreshing stay dropped:
+
+```bash
+git cherry-pick <old-head>..origin/<head-branch>
+```
+
+Then record `origin/<head-branch>` as `<old-head>`, so the next push leases the head you just took in. When `<head-branch>` does not exist on `origin`, use the local `<head-branch>` in both places.
 
 The step is done when the branch is rebased onto `origin/<base>` and includes the source's latest commits.
 
@@ -87,13 +93,7 @@ The step is done when every human who committed to the original work appears as 
 
 In place, push with the command in the `refresh` skill's "Push and update the PR" section, using `<old-head>` as the lease. When `<head-branch>` does not exist on `origin`, such as a thread's branch that was never pushed, push it with `git push -u origin HEAD:<head-branch>` instead.
 
-When the lease fails, the author pushed again. Fetch, then add only their new commits, so the commits you dropped while refreshing stay dropped:
-
-```bash
-git cherry-pick <old-head>..origin/<head-branch>
-```
-
-Run the repository's checks again, record `origin/<head-branch>` as `<old-head>`, and push again. Update the original PR's description to match what the branch now does, following the `pr` skill. When the branch has no PR, file one with the `pr` skill.
+When the lease fails, the author pushed again. Repeat the source check from "Update it to the base", run the repository's checks again, and push again. Update the original PR's description to match what the branch now does, following the `pr` skill. When the branch has no PR, file one with the `pr` skill.
 
 For a Replacement or Stacked continuation, push the new branch and file its PR with the `pr` skill.
 
