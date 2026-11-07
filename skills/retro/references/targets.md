@@ -7,7 +7,7 @@ A target is a file or check that a finding changes. Edit a target in the reposit
 | Target | What belongs there | Source of truth | Create it with |
 |---|---|---|---|
 | Global rules | Rules that apply in every project, such as the files in `~/.claude/rules/` and `~/.codex/AGENTS.md` | The `adelrodriguez/instructions` repository | `writing-for-agents` |
-| Skills | A workflow the agent follows for one kind of task | The repository the skill was installed from: `adelrodriguez/skills` for a skill in its README, otherwise the skill's `source` in `~/.agents/.skill-lock.json` or its APM dependency | `writing-for-agents` |
+| Skills | A workflow the agent follows for one kind of task | The repository the skill was installed from: `adelrodriguez/skills` for a skill in its README, otherwise the skill's `metadata.reference` or its APM dependency | `writing-for-agents` |
 | `AGENTS.md` or `CLAUDE.md` in the repository | Navigation pointers to other files, and facts every task in the repository needs. Every line loads on every turn | The repository | `writing-for-agents` |
 | `CODING_STANDARDS.md` | Judgement calls that a reviewer checks against the diff, such as consistency across files | The repository | `writing-for-agents` |
 | `GLOSSARY.md` and ADRs | Domain terms, and decisions with their reasons | The repository | `domain-modeling` |
