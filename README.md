@@ -64,7 +64,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
 - **Boat.** `boat` needs the [Boat CLI](https://docs.boat.dev/quickstart), a signed-in account with sandbox access, and `jq` for its shell examples. Integrated agents also need configured model access.
-- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
+- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `how`, `why`, and `prune` use subagents when they can, and do the work themselves when they can't.
 - **A browser tool.** `design-ui`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
@@ -96,17 +96,17 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `how` |  | Explains how a subsystem works, or where code belongs, from the source | None |
 | `issue` | ✓ | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
 | `janitor` | ✓ | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, `sessions` |
-| `maintenance` |  | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |
-| `modernize` |  | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
+| `maintenance` | ✓ | Prunes unused material, upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `prune`, `modernize`, `consistency`, `pr` |
+| `modernize` | ✓ | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
 | `monitor` | ✓ | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `comment`, `upload` |
 | `next-task` | ✓ | Recommends the one unblocked issue to do next | `gh` |
 | `pr` | ✓ | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
+| `prune` | ✓ | Removes unused tests, dependencies, dead code, suppressions, workarounds, feature flags, assets, and config, and strengthens weak tests | `testing`, `modernize` for upgrades |
 | `refresh` | ✓ | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
 | `restraint` | ✓ | Cuts additions down to what improves the user's outcome | None |
 | `retro` |  | Reviews agent sessions and the project's history, then proposes changes to instructions, skills, and checks | `gh`, `writing-for-agents`, `coding-standards`, `sessions` |
 | `sessions` | ✓ | Finds and reads agent sessions in T3 Code, Claude Code, Codex, and OpenCode, including T3 Code threads on linked machines, and matches worktrees and processes to them | None |
 | `takeover` | ✓ | Finishes someone else's pull request, branch, or thread on its own branch, and keeps their credit | `gh`, `refresh`, `pr`, `monitor`, T3 Code for threads |
-| `test-pruning` |  | Sorts every test into delete, strengthen, rewrite, or keep, and applies the changes | `testing` |
 | `testing` | ✓ | Writes tests that prove behavior through the public interface, with bug fixes test-first | `codebase-design` |
 | `unslop` | ✓ | Rewrites text to remove filler, jargon, and patterns that sound generated | My instructions |
 | `upload` | ✓ | Uploads a file to a public bucket and returns its URL | R2 bucket, curl, `FILE_UPLOAD_*` environment variables |
