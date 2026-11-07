@@ -69,6 +69,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
 - **T3 Code.** `housekeeping` cleans up T3 Code worktrees and threads. `sessions` reads T3 Code threads, including those on linked machines, when T3 Code is present.
+- **Adamantite.** In a repository that uses [Adamantite](https://github.com/adelrodriguez/adamantite), `modernize` hands the dependencies Adamantite manages to the `adamantite` skill, which ships in that repository's `skills/adamantite` folder.
 - **My instructions.** `unslop` applies the "Write clearly" rules from [adelrodriguez/instructions](https://github.com/adelrodriguez/instructions).
 
 ## Skills
