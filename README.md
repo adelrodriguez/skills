@@ -65,7 +65,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
 - **Boat.** `boat` needs the [Boat CLI](https://docs.boat.dev/quickstart), a signed-in account with sandbox access, and `jq` for its shell examples. Integrated agents also need configured model access.
 - **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `how`, `why`, and `test-pruning` use subagents when they can, and do the work themselves when they can't.
-- **A browser tool.** `interface-design`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
+- **A browser tool.** `design-ui`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
 - **T3 Code.** `housekeeping` cleans up T3 Code worktrees and threads. `sessions` reads T3 Code threads, including those on linked machines, when T3 Code is present.
@@ -86,14 +86,14 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `consistency` | ✓ | Applies one pattern to every matching place in a scope, after a dry run | `codebase-design` |
 | `council-review` | ✓ | Runs `code-review` with several reviewers, which can be different models, and compares their scores | Subagents, `code-review` |
 | `design-context` | ✓ | Records the product in `PRODUCT.md` and the visual system in `DESIGN.md`, and asks only what the code can't answer | None |
-| `design-review` | ✓ | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `interface-design` |
+| `design-review` | ✓ | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `design-ui` |
+| `design-ui` | ✓ | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
 | `full-send` | ✓ | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
 | `full-stop` | ✓ | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
 | `harden-ui` | ✓ | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
 | `hillclimb` | ✓ | Turns a goal into a score and target, then raises the score one measured round at a time and keeps only the rounds that improve it | `pr`, `council-review` for judged hills |
 | `housekeeping` |  | Cleans up old agent worktrees, temp files, and build caches across the machine, after a dry run | T3 Code, `gh`, `sessions` |
 | `how` |  | Explains how a subsystem works, or where code belongs, from the source | None |
-| `interface-design` | ✓ | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
 | `issue` | ✓ | Files a GitHub issue after checking for duplicates, with evidence, labels, and links | `gh`, `unslop`, `upload` |
 | `janitor` | ✓ | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, `sessions` |
 | `maintenance` |  | Upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `modernize`, `consistency`, `test-pruning`, `pr` |

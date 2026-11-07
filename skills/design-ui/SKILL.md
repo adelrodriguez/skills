@@ -1,5 +1,5 @@
 ---
-name: interface-design
+name: design-ui
 description: Use when building, redesigning, or restyling UI, such as pages, screens, and components, or when the user says a design looks generic, templated, or AI-made.
 metadata:
   reference:
