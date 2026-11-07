@@ -10,17 +10,17 @@ metadata:
 
 # Review a design
 
-Review a built interface through two independent lenses, then verify and rank what they find. The design lens judges screenshots. The implementation lens checks the code and the rendered page. This skill reports and stops. Fix findings only when the user asks, using the `interface-design` skill.
+Review a built interface through two independent lenses, then verify and rank what they find. The design lens judges screenshots. The implementation lens checks the code and the rendered page. This skill reports and stops. Fix findings only when the user asks, using the `design-ui` skill.
 
 For worst-case data and failure states, use the `harden-ui` skill. For a review of code changes, use the `code-review` skill.
 
 ## Set the target
 
-Resolve the request to source files and, when the app runs, a URL. Prefer a narrow target, because a section reviewed closely yields more than a whole page at a glance. Read `PRODUCT.md` and `DESIGN.md` when they exist. Choose the surface's mode as the "Choose the mode" step of `interface-design` describes.
+Resolve the request to source files and, when the app runs, a URL. Prefer a narrow target, because a section reviewed closely yields more than a whole page at a glance. Read `PRODUCT.md` and `DESIGN.md` when they exist. Choose the surface's mode as the "Choose the mode" step of `design-ui` describes.
 
 Take full-page screenshots at 390, 768, and 1440 pixels, or at the widths the product ships at. Add screenshots of the states the target has, such as an open menu or a form error. When no browser tool is available, the design lens cannot run. Say so at the top of the report and run only the implementation lens.
 
-Find the absolute paths of the `craft.md`, `tells.md`, and `motion.md` references in the `interface-design` skill's `references/` folder, so that the lenses can read them.
+Load the `design-ui` skill, and write down the absolute paths of `references/craft.md`, `references/tells.md`, and `references/motion.md` under the base directory that the harness reports when it loads the skill, so that the lenses can read them.
 
 Finish when the target, the mode, every screenshot path, and the three reference paths are written down.
 
