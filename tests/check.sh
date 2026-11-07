@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Check that the README lists every skill, and that skills name only skills
-# this repository ships or the README's Requirements section documents.
+# this repository ships or the README's Requirements section names as "the `x` skill".
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
@@ -56,10 +56,10 @@ def skill_references(text):
 
 for path in sorted(skills_dir.rglob("*.md")):
     for number, name in skill_references(path.read_text()):
-        if name not in skills and f"`{name}`" not in requirements:
+        if name not in skills and f"`{name}` skill" not in requirements:
             errors.append(
                 f"{path}:{number}: `{name}` is not a skill in skills/. "
-                "Add it, or document where to install it under Requirements in README.md"
+                f"Add it, or name it as the `{name}` skill under Requirements in README.md, with where to install it"
             )
 
 for error in errors:
