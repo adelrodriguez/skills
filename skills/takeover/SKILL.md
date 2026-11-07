@@ -70,7 +70,7 @@ Check the source again before you continue, because its author may have pushed s
 git cherry-pick <old-head>..origin/<head-branch>
 ```
 
-Then record `origin/<head-branch>` as `<old-head>`, so the next push leases the head you just took in. When `<head-branch>` does not exist on `origin`, use the local `<head-branch>` in both places.
+Then record `origin/<head-branch>` as `<old-head>`, so the next push leases the head you just took in. When `<head-branch>` does not exist on `origin`, use the local `<head-branch>` in both places. When the PR comes from a fork, run `git fetch origin pull/<pr>/head` and use `FETCH_HEAD` in both places.
 
 The step is done when the branch is rebased onto `origin/<base>` and includes the source's latest commits.
 
