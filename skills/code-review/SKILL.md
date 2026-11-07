@@ -41,6 +41,8 @@ Find the base after `git fetch origin`:
 
 Review the diff from the base to the working tree in the selected files, including untracked files. Use the same diff command in every round. State the intent and exclusions in one or two sentences. Run checks that cover the change, and fix failures caused by the change before requesting review. Note unavailable checks and existing failures in the review brief.
 
+List the repository's standards files, which document how its code should be written. Include `CODING_STANDARDS.md` and `CONTRIBUTING.md` when they exist, and every file that `AGENTS.md` or `CODING_STANDARDS.md` points to for coding rules. When the repository has none, write "none found" in the brief.
+
 ## Start the reviewer
 
 Use the available subagent tools. If they support model selection, select the requested model. Do not hardcode model IDs.
@@ -60,22 +62,26 @@ Base: <sha>
 Intent: <intent>
 Out of scope: <scope>
 Checks: <results>
+Standards: <paths, or "none found">
 
 Run `git diff <base> [-- <paths>]` and `git status --short`.
 Read untracked files and the surrounding code. Find bugs, broken callers,
 and behavior that differs from the intent.
-Skip style issues unless they hide a bug. Recommend the smallest fix.
+Read each standards file. Report each change that breaks one of its rules,
+and cite the file and the rule's heading. Skip other style issues unless
+they hide a bug. Recommend the smallest fix.
 Flag code, tests, or guards that the intended behavior does not need.
 Treat other code paths, rare cases, minor performance costs, and extra
 compatibility as nits.
 
 Use these severity labels:
 - blocker: The intended case behaves incorrectly.
-- should: Callers will encounter a real bug within scope.
+- should: Callers will encounter a real bug within scope, or the change
+  breaks a rule in a standards file.
 - nit: Any other finding.
 Reply:
 VERDICT: APPROVE or CHANGES
-S1 [blocker|should|nit] <file>:<line> <claim>. Fix: <suggestion>
+S1 [blocker|should|nit] <file>:<line> <claim>. Rule: <standards file>#<heading>, for a standards finding. Fix: <suggestion>
 Keep each finding's ID stable across rounds.
 ```
 
