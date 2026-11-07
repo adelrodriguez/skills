@@ -10,14 +10,12 @@ A target is a file or check that a finding changes. Edit a target in the reposit
 | Skills | A workflow the agent follows for one kind of task | The repository the skill was installed from: `adelrodriguez/skills` for a skill in its README, otherwise the skill's `metadata.reference` or its APM dependency | `writing-for-agents` |
 | `AGENTS.md` or `CLAUDE.md` in the repository | Navigation pointers to other files, and facts every task in the repository needs. Every line loads on every turn | The repository | `writing-for-agents` |
 | `CODING_STANDARDS.md` | Judgement calls that a reviewer checks against the diff, such as consistency across files | The repository | `coding-standards` |
-| `GLOSSARY.md` and ADRs | Domain terms, and decisions with their reasons | The repository | `domain-modeling` |
+| `GLOSSARY.md` and ADRs | Domain terms, and decisions with their reasons | The repository | `writing-documentation` |
 | `PRODUCT.md` and `DESIGN.md` | The product's users and goals, and its visual system | The repository | `design-context` |
 | Docs | Reference that an agent document points to | The repository's docs folder | `writing-documentation` |
 | Checks | Lint rules, type checks, tests, pre-commit hooks, and CI jobs | The repository's check config and CI workflows | `coding-standards`, which adds the check to the tools the repository already runs |
 | Tools | Scripts and CLIs that replace expensive tool calls | The skill's `scripts/` folder, or the repository's scripts | A script in the skill or repository |
 | Harness reference | How this skill finds and reads sessions | `references/harnesses.md` in this skill | This skill |
-
-The implementation agent explores, writes code, and debugs, so it has the least context to spare. The reviewer receives only a diff. Put a rule that a reviewer can check against a diff in `CODING_STANDARDS.md`, not in `AGENTS.md`. A rule there reaches review only when the review skill reads the file, so when the brief in the `code-review` skill does not name it, say so in the finding.
 
 ## Candidate categories
 

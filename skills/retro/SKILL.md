@@ -39,7 +39,8 @@ Skip this step when the sessions did not work in a repository.
 
 For each repository the sessions changed, read the history of the work from its base:
 
-- The commits from `git log --stat <base>..<head>`, and the pull requests, with their reviews and comments, from `gh pr view <pr> --comments`.
+- The commits from `git log --stat <base>..<head>`.
+- Each pull request's description, review summaries, and comments from `gh pr view <pr> --comments`, and its inline review comments and replies, including resolved and outdated ones, from `gh api --paginate repos/<owner>/<repo>/pulls/<pr>/comments`. `gh pr view` leaves out inline comments, where most review findings live.
 - Earlier work on the same files from `git log --follow --stat -- <path>`, back to the change that introduced their current shape.
 
 Look for rework, which is work that a later commit undid or reshaped:
@@ -68,7 +69,7 @@ Go through each category in "Candidate categories" in [`references/targets.md`](
 - The proposed change, written as the exact text, check, or script it adds or removes.
 - What the change would have saved: the turns, tool calls, review rounds, or commits it would have prevented.
 
-For each candidate whose target is `CODING_STANDARDS.md` or a check, follow the "Collect the evidence" and "Sort each candidate" steps of the `coding-standards` skill, and record whether it becomes a check or a rule.
+For each candidate whose target is `CODING_STANDARDS.md` or a check, apply the criteria in the "Collect the evidence" and "Sort each candidate" steps of the `coding-standards` skill, and record whether it becomes a check or a rule. Propose the check instead of adding it, because the retro changes no files.
 
 When a rule already exists but the agent did not follow it, the finding is about its trigger or its location, not a new rule. When the same fix applies to other repositories that use the same convention, name them.
 
