@@ -10,7 +10,7 @@ metadata:
 
 Before filing, check whether a pull request for this branch already exists. If it does, return its link. Update it only when requested.
 
-Review the diff locally against the base branch (usually `origin/main`) to make sure its contents match the goal. For a stacked PR, use the preceding PR's head branch as the base.
+Review the diff locally against the base branch (usually `origin/main`) to make sure its contents match the goal. For a stacked PR, use the preceding PR's head branch as the base, and first read that PR's open review findings, including inline comments from `gh api --paginate repos/<owner>/<repo>/pulls/<pr>/comments`. A fix in the base PR changes the code your PR builds on.
 
 ## Write the title
 

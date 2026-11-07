@@ -18,7 +18,7 @@ Covers commits, PR descriptions and reviews, code comments, TODOs, ADRs, tests, 
 
 - Trace history through renames with `git log --follow`.
 - Find the commit that added or removed an exact value with `git log -S '<string>'`, or a pattern with `git log -G '<regex>'`.
-- Read the full PR body, reviews, and comments for each substantive commit with `gh pr view`.
+- Read the full PR body, reviews, and comments for each substantive commit with `gh pr view <pr> --comments`, and the inline review comments with `gh api --paginate repos/<owner>/<repo>/pulls/<pr>/comments`. `gh pr view` leaves out inline comments, where most review findings live.
 - Search for ADRs, and for TODO, FIXME, HACK, and NOTE comments near the target.
 - Read the tests added with the change. Their names and inputs often show the edge case that motivated it.
 
