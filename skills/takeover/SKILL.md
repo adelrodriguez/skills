@@ -85,7 +85,15 @@ The step is done when every human who committed to the original work appears as 
 
 ## Push and watch the PR
 
-In place, push with the command in the `refresh` skill's "Push and update the PR" section, using `<old-head>` as the lease. When the lease fails, the author pushed again. Fetch, record `origin/<head-branch>` as `<old-head>`, rebase your commits onto it, and push again. Update the original PR's description to match what the branch now does, following the `pr` skill. When the branch has no PR, file one with the `pr` skill.
+In place, push with the command in the `refresh` skill's "Push and update the PR" section, using `<old-head>` as the lease. When `<head-branch>` does not exist on `origin`, such as a thread's branch that was never pushed, push it with `git push -u origin HEAD:<head-branch>` instead.
+
+When the lease fails, the author pushed again. Fetch, then add only their new commits, so the commits you dropped while refreshing stay dropped:
+
+```bash
+git cherry-pick <old-head>..origin/<head-branch>
+```
+
+Run the repository's checks again, record `origin/<head-branch>` as `<old-head>`, and push again. Update the original PR's description to match what the branch now does, following the `pr` skill. When the branch has no PR, file one with the `pr` skill.
 
 For a Replacement or Stacked continuation, push the new branch and file its PR with the `pr` skill.
 
