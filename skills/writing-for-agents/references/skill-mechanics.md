@@ -10,7 +10,7 @@ A **user-invoked** skill is loaded only when the user types its name. It costs n
 
 Make a skill model-invoked only when the agent or another skill must load it on its own. Otherwise, make it user-invoked.
 
-A model-invoked skill that holds only reference can share that reference between several skills. Two user-invoked skills cannot share reference this way, because neither can load the other. Skills install one folder at a time, so a skill cannot read a file outside its own folder, and a shared plain file never reaches the machine. Put their shared reference in a model-invoked skill that holds only reference.
+A model-invoked skill that holds only reference can share that reference between several skills. Two user-invoked skills cannot share reference this way, because neither can load the other. Skills install one folder at a time, so a plain file outside every skill folder never reaches the machine. A skill can still read another installed skill's files by loading that skill and using the base directory the harness reports, as `design-review` does with `design-ui`. Put their shared reference in a model-invoked skill that holds only reference.
 
 ## Split off a new skill
 

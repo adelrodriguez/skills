@@ -1,6 +1,6 @@
 ---
 name: design-context
-description: Use when writing or updating PRODUCT.md or DESIGN.md, or when interface-design needs product or visual context that does not exist yet.
+description: Use when writing or updating PRODUCT.md or DESIGN.md, or when design-ui needs product or visual context that does not exist yet.
 metadata:
   reference:
     - "https://github.com/pbakaus/impeccable/blob/main/skill/reference/init.md"
@@ -69,7 +69,7 @@ Finish when `PRODUCT.md` exists and every statement in it is either confirmed or
 Follow the [DESIGN.md format](https://github.com/google-labs-code/design.md/blob/main/docs/spec.md): YAML front matter with the tokens, then these sections in order: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, and Do's and Don'ts. Omit a section that does not apply.
 
 - **Existing look:** Extract the tokens from the code, such as CSS custom properties, the Tailwind theme, or token files. Keep the project's own token names and color formats. Then ask the user to describe the look's personality in a few words and what it must never become, and write the prose from their answer.
-- **New look:** Write `DESIGN.md` only from a plan the user approved in `interface-design`. If no plan is approved yet, skip this step and say that `DESIGN.md` waits for the plan.
+- **New look:** Write `DESIGN.md` only from a plan the user approved in `design-ui`. If no plan is approved yet, skip this step and say that `DESIGN.md` waits for the plan.
 
 Under "Do's and Don'ts", record each direction the user rejected and why, so that a later session does not propose it again.
 
