@@ -16,7 +16,7 @@ A takeover request authorizes you to continue on the original branch: rebase it,
 
 Read the source the user names:
 
-- **PR.** Read the description, every review finding, every comment, and the diff with `gh pr view <pr> --comments` and `gh pr diff <pr>`.
+- **PR.** Read the description, review summaries, every comment, and the diff with `gh pr view <pr> --comments` and `gh pr diff <pr>`. Read every inline review finding and reply with `gh api --paginate repos/<owner>/<repo>/pulls/<pr>/comments`, because `gh pr view` leaves out inline comments.
 - **Branch.** Read `git log origin/<base>..<branch>` and the diff against its base. Find its PR with `gh pr list --head <branch>`.
 - **T3 thread.** Read it with `t3_thread_read`, including the user's later corrections. Find the worktree it worked in, its branch, and that branch's PR. Check the worktree for uncommitted changes with `git status --porcelain`.
 

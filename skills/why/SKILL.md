@@ -31,7 +31,7 @@ Gather the seed context that every investigator and the synthesizer receive:
 
 - File paths with line ranges, and the key symbols.
 - The commits that last touched the target, from `git blame` and `git log --follow`, traced back past the most recent commit to the change that introduced the shape.
-- PR numbers from commit subjects, such as `(#1234)`, and each substantive PR's body, reviews, and comments from `gh pr view`.
+- PR numbers from commit subjects, such as `(#1234)`, and each substantive PR's body, reviews, and comments from `gh pr view <pr> --comments`, and its inline review comments from `gh api --paginate repos/<owner>/<repo>/pulls/<pr>/comments`.
 - Ticket IDs mentioned in commits or PR bodies.
 
 The step is done when every substantive commit on the target has its PR and ticket IDs recorded, or a note that it has none.
