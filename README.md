@@ -64,7 +64,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
 - **Boat.** `boat` needs the [Boat CLI](https://docs.boat.dev/quickstart), a signed-in account with sandbox access, and `jq` for its shell examples. Integrated agents also need configured model access.
-- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `how`, `why`, and `prune` use subagents when they can, and do the work themselves when they can't.
+- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `footguns`, `how`, `why`, and `prune` use subagents when they can, and do the work themselves when they can't.
 - **A browser tool.** `design-ui`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
@@ -88,6 +88,7 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `design-context` | ✓ | Records the product in `PRODUCT.md` and the visual system in `DESIGN.md`, and asks only what the code can't answer | None |
 | `design-review` | ✓ | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `design-ui` |
 | `design-ui` | ✓ | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
+| `footguns` | ✓ | Finds code that lets mistakes pass the type checker, such as implicit state machines and unenforced invariants, and reports each with a failure scenario and a fix, which it applies only on request | `codebase-design`, `issue`, `testing` |
 | `full-send` | ✓ | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
 | `full-stop` | ✓ | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
 | `harden-ui` | ✓ | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
