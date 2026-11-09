@@ -5,7 +5,7 @@ description: Use when the user says "footguns" or asks to find foot guns, implic
 
 # Find footguns
 
-Find code that makes the wrong move easy. A footgun is a rule the code relies on but does not encode, so a mistake passes the type checker and review and fails at runtime. Report each footgun with a concrete failure and the encoding that would prevent it. Do not edit code.
+Find code that makes the wrong move easy. A footgun is a rule the code relies on but does not encode, so a mistake passes the type checker and review and fails at runtime. Report each footgun with a concrete failure and the encoding that would prevent it. Edit code only when the user asks you to fix footguns, either in the request or after the report.
 
 ## Set the scope
 
@@ -17,6 +17,7 @@ For example:
 /footguns
 /footguns state-machines invariants
 /footguns idempotency src/billing
+/footguns fix races
 ```
 
 Read only the reference files for the selected lenses:
@@ -83,7 +84,21 @@ State the lenses and paths you checked, and the counts of kept and dropped candi
 
 List the dropped candidates in one short table with their reasons, so the user can disagree.
 
-When a proposed encoding changes a module boundary or public API, say that it needs the `codebase-design` skill first. End with a question that asks which footguns to file with the `issue` skill or to fix, with nothing after it.
+When a proposed encoding changes a module boundary or public API, say that it needs the `codebase-design` skill first. When the user has not asked for fixes, end with a question that asks which footguns to file with the `issue` skill or to fix, with nothing after it.
+
+## Fix the footguns
+
+Run this step only when the user asks for fixes. Fix the footguns they name, or every kept footgun when they say to fix all of them.
+
+For each footgun, in rank order:
+
+1. Write a test that fails because of the footgun, using the `testing` skill. When the encoding is a type, the failing check can be a type test or a compile error in a test file.
+2. Apply the proposed encoding. When it changes a module boundary or public API, use the `codebase-design` skill and wait for the user's agreement first.
+3. Run the new test and the affected checks, and commit the test and the fix together.
+
+When a fix fails checks you cannot fix within that footgun, restore it and report the footgun as unfixed with the failure. Report each fixed footgun with its commit and the test that now passes.
+
+The step is done when every footgun the user named is committed with a passing test or reported as unfixed with a reason.
 
 ## Check the report
 
@@ -91,5 +106,5 @@ When a proposed encoding changes a module boundary or public API, say that it ne
 - Every kept footgun has a failure scenario, a `file:line`, a one-sentence rule, an encoding, and a confidence.
 - Every dropped candidate has a reason.
 - Every encoding uses a library or pattern the repository already has, or says that it adds one.
-- No code was edited.
-- The report names any missing capability on its first line, and the closing question comes last.
+- No code was edited unless the user asked for fixes, and every fix has a test that failed before it.
+- The report names any missing capability on its first line, and any closing question comes last.

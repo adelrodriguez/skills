@@ -88,7 +88,7 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `design-context` | ✓ | Records the product in `PRODUCT.md` and the visual system in `DESIGN.md`, and asks only what the code can't answer | None |
 | `design-review` | ✓ | Reviews a design through two independent lenses, screenshots and code, and ranks the verified findings | Subagents, a browser tool, `design-ui` |
 | `design-ui` | ✓ | Designs pages, screens, and components from the subject instead of the category default, and checks the render | A browser tool, `design-context`, `writing-for-humans`, `restraint` |
-| `footguns` | ✓ | Finds code that lets mistakes pass the type checker, such as implicit state machines and unenforced invariants, and reports each with a failure scenario and a fix | `codebase-design`, `issue` |
+| `footguns` | ✓ | Finds code that lets mistakes pass the type checker, such as implicit state machines and unenforced invariants, and reports each with a failure scenario and a fix, which it applies only on request | `codebase-design`, `issue`, `testing` |
 | `full-send` | ✓ | Takes a task all the way to a merged pull request without stopping to ask | `pr`, `code-review`, `monitor`, `upload` |
 | `full-stop` | ✓ | Runs `full-send` until the pull request is ready, then hands it back unmerged | `full-send` |
 | `harden-ui` | ✓ | Breaks UI with worst-case data, failed requests, and missing permissions behind a dev-only switch, then reports a fix for each break | A browser tool, `testing` |
