@@ -1,0 +1,13 @@
+{
+  "name": "adelrodriguez-skills",
+  "version": "0.1.0",
+  "description": "Agent skills for pull requests, code review, testing, design, and writing that call each other as one set.",
+  "author": {
+    "name": "Adel Rodríguez"
+  },
+  "homepage": "https://github.com/adelrodriguez",
+  "repository": "https://github.com/adelrodriguez/skills",
+  "license": "MIT",
+  "logo": "assets/icon.png",
+  "keywords": ["skills", "pull-requests", "code-review", "testing", "design", "writing", "github"]
+}
