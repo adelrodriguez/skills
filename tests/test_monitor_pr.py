@@ -81,7 +81,7 @@ def snapshot(checks=(), reviews=(), comments=(), earlier=(), merge_state="CLEAN"
         "comments": {"nodes": list(comments)},
         "reactions": {"nodes": []},
         "reviewThreads": {"nodes": []},
-        # Check names on the PR's recent commits, as the query's `earlier` field returns them.
+        # Check names on the PR's first commits, as the query's `earlier` field returns them.
         "earlier": {"nodes": [
             {"commit": {"statusCheckRollup": {"contexts": {"nodes": [
                 {"kind": "CheckRun", "name": name, "checkSuite": {"app": {"slug": app}}} for name, app in earlier

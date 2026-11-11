@@ -364,7 +364,7 @@ query($owner: String!, $name: String!, $number: Int!) {
       reviews(last: 100) { nodes { databaseId url state body submittedAt commit { oid } author { login kind: __typename } } }
       comments(last: 100) { nodes { databaseId url body createdAt lastEditedAt author { login kind: __typename } } }
       reactions(last: 50) { nodes { content createdAt user { login kind: __typename } } }
-      earlier: commits(last: 30) { nodes { commit { statusCheckRollup { contexts(first: 50) { nodes {
+      earlier: commits(first: 30) { nodes { commit { statusCheckRollup { contexts(first: 100) { nodes {
         kind: __typename
         ... on CheckRun { name checkSuite { app { slug } } }
       } } } } } }
@@ -604,6 +604,7 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
                 note(agent, check.finished, state, check.text, check.url)
 
     # A clean run of some agents leaves only a check run on the commit it reviewed.
+    # `earlier` holds the PR's first commits, where a first-push review lands.
     for node in pr["earlier"]["nodes"]:
         rollup = node["commit"]["statusCheckRollup"]
         for context in rollup["contexts"]["nodes"] if rollup else []:
