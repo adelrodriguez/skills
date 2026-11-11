@@ -38,7 +38,7 @@ monitor-pr show <pr>
 The script prints one line per event and returns one of these exit codes:
 
 - `0`: the `--until` condition is met or the PR merges.
-- `1`: action is needed because a required check failed, the branch conflicts or is `BEHIND`, a review agent left findings or stalled, review threads remain unresolved, or the PR closed.
+- `1`: action is needed because a required check failed, the branch conflicts or is `BEHIND`, a review agent left findings or stalled, review threads remain unresolved, everything is ready except an agent that reviews only on request, or the PR closed.
 - `2`: the input is invalid, or another `monitor-pr` already watches the PR.
 
 Choose the wait condition that matches the task:
@@ -76,13 +76,19 @@ Verify approval for the latest head according to how each agent reports its revi
 - **Agents that publish a review check.** Wait for the check to report approval. A completed check with unresolved findings is not approval.
 - **Agents that leave comments.** Wait for a comment that reports no remaining issues or explicitly approves the change in the agent's own wording. Silence and resolved threads do not count as approval.
 
-After each push, wait for fresh approval from every review agent. If a review does not restart automatically, use the retry command that `monitor-pr` prints when it reports a stalled agent. Post the command with the `comment` skill.
+After each push, wait for fresh approval from every review agent. Most agents review every push on their own. Bugbot and Greptile review only the PR's first push on their own, and Codex reviews only on request. `monitor-pr` marks such an agent `unrequested` and does not wait for it.
 
-Use the bot's handle, which can differ from its product name:
+Request a review only when `monitor-pr` exits with "ready for an on-request review" or reports a stalled or failed agent. Never request one only because you pushed. Before you request an `unrequested` agent, make sure another review agent approved the head. If none did, run the `code-review` skill on the diff and fix its valid findings first.
 
-- Bugbot: `@cursor review`.
+When the exit names an earlier commit that the agent approved, run the compare command it prints. If the changes since that commit only fix typos or formatting, count the earlier approval and do not request a review. If they change behavior or the meaning of a document, request one.
+
+Post the request with the `comment` skill, with the command on the first line. Use the bot's handle, which can differ from its product name:
+
+- Bugbot: `@cursor review` or `bugbot run`.
+- Codex: `@codex review`.
 - Greptile: `@greptileai review`.
 - CodeRabbit: `@coderabbitai review`.
+- Pullfrog: `@pullfrog review`.
 
 Fix valid findings and CI failures after checking whether each failure comes from the repository or the infrastructure.
 
@@ -123,7 +129,7 @@ Rebase when `monitor-pr` reports `DIRTY`, `BEHIND`, or base commits that touch t
 
 If another PR makes this PR obsolete, stop the watcher and report that to the user. Ask before closing the PR unless the user has already authorized closure.
 
-Before reporting readiness, verify that required checks pass, every review agent approves the latest head, and no review threads remain unresolved. A `ready` exit from `monitor-pr` establishes all three for the configured agents; any other watcher exit does not. Also verify any additional repository criteria, such as review scores.
+Before reporting readiness, verify that required checks pass, every review agent approves the latest head, and no review threads remain unresolved. A `ready` exit from `monitor-pr` establishes all three for the configured agents. A "ready for an on-request review" exit establishes them when you counted each agent's earlier approval under "Address review feedback". Any other watcher exit does not. Also verify any additional repository criteria, such as review scores.
 
 Stop the watcher once these conditions are met.
 

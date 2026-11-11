@@ -25,6 +25,8 @@ If the model name is unavailable, use the harness name.
 
 Keep the attribution inside the note and the comment outside it. Put a blank line after the callout so the comment does not join the blockquote. Start the attribution line with the robot emoji. Do not add a horizontal rule, Setext underline, heading, signature footer, or second attribution.
 
+A review request for a bot, such as `@cursor review`, is the exception. Put the command alone on the first line and the callout after it, because the bot ignores a command that follows the callout.
+
 Apply this format to issue comments, top-level PR comments, inline review comments, replies to bots or reviewers, and explanations posted before you resolve or dismiss feedback. Leave issue descriptions, PR descriptions, commit messages, and text the user explicitly asks to post verbatim without attribution unchanged.
 
 Write the comment in a direct style:
