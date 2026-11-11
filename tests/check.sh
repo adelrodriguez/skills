@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Check that the README lists every skill, and that skills name only skills
-# this repository ships or the README's Requirements section names as "the `x` skill".
+# Check that the README lists every skill, that skills name only skills
+# this repository ships or the README's Requirements section names as "the `x` skill",
+# and that the Cursor plugin manifest and skill frontmatter are valid.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 exec python3 - <<'PY'
+import json
 import pathlib
 import re
 import sys
@@ -62,6 +64,19 @@ for path in sorted(skills_dir.rglob("*.md")):
                 f"{path}:{number}: `{name}` is not a skill in skills/. "
                 f"Add it, or name it as the `{name}` skill under Requirements in README.md, with where to install it"
             )
+
+for name, text in skills.items():
+    frontmatter = text.split("\n---", 1)[0]
+    if not re.search(rf"^name: {re.escape(name)}$", frontmatter, re.M):
+        errors.append(f"skills/{name}/SKILL.md: set the frontmatter name to `{name}`, to match its folder")
+    if not re.search(r"^description: \S", frontmatter, re.M):
+        errors.append(f"skills/{name}/SKILL.md: add a one-line frontmatter description")
+
+manifest = json.loads(pathlib.Path(".cursor-plugin/plugin.json").read_text())
+if not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", manifest.get("name", "")):
+    errors.append(".cursor-plugin/plugin.json: name must be lowercase kebab-case")
+if manifest.get("license") != pathlib.Path("LICENSE").read_text().split(" License", 1)[0]:
+    errors.append(".cursor-plugin/plugin.json: license must match LICENSE")
 
 for error in errors:
     print(error, file=sys.stderr)

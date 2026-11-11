@@ -15,6 +15,7 @@ My global instructions, which name some of these skills, live in [adelrodriguez/
 - [Install the skills](#install-the-skills)
   - [With the skills CLI](#with-the-skills-cli)
   - [With APM](#with-apm)
+  - [As a Cursor plugin](#as-a-cursor-plugin)
 - [Requirements](#requirements)
 - [Skills](#skills)
 - [Credits](#credits)
@@ -56,6 +57,18 @@ dependencies:
         - pr
         - unslop
         - upload
+```
+
+### As a Cursor plugin
+
+The repository is also a [Cursor plugin](https://cursor.com/docs/plugins) named `adelrodriguez-skills`, which installs every skill at once. Install the whole set, because the skills call each other. Some skills also need tools from outside this repository, such as `gh`, subagents, Python 3 for `monitor`, the `FILE_UPLOAD_*` R2 variables for `upload`, and T3 Code for `housekeeping` and `sessions`. [Requirements](#requirements) lists them all.
+
+When the plugin is in the Cursor Marketplace, open **Customize** in the Cursor sidebar, find `adelrodriguez-skills`, select **Install**, and choose a project or user scope.
+
+To install it from this repository, clone it into Cursor's local plugin folder, then run **Developer: Reload Window**:
+
+```sh
+git clone https://github.com/adelrodriguez/skills ~/.cursor/plugins/local/adelrodriguez-skills
 ```
 
 ## Requirements
