@@ -118,6 +118,14 @@ class AgentStates(unittest.TestCase):
             pr = snapshot(reviews=[BUGBOT_REVIEWED_OLD], comments=[comment(f"{request}\n\n{MARKER}")])
             self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "waiting"}, request)
 
+    def test_request_from_another_maintainer_counts(self):
+        pr = snapshot(reviews=[BUGBOT_REVIEWED_OLD], comments=[comment("@cursor review", author=user("teammate"))])
+        self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "waiting"})
+
+    def test_bot_comment_is_not_a_request(self):
+        pr = snapshot(reviews=[BUGBOT_REVIEWED_OLD], comments=[comment("@cursor review", author=bot("github-actions"))])
+        self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "unrequested"})
+
     def test_longer_word_is_not_a_request(self):
         pr = snapshot(reviews=[BUGBOT_REVIEWED_OLD], comments=[comment("@cursor reviewer, see above")])
         self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "unrequested"})

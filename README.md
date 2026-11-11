@@ -131,7 +131,7 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `janitor` | ✓ | Cleans up what a task, a session, or every agent session left behind, such as processes, browsers, simulators, and temp files | `housekeeping`, `sessions` |
 | `maintenance` | ✓ | Prunes unused material, upgrades dependencies, replaces old patterns, and prunes tests across a repository, one pull request per part | `prune`, `modernize`, `consistency`, `pr` |
 | `modernize` | ✓ | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
-| `monitor` | ✓ | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `comment`, `upload` |
+| `monitor` | ✓ | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `code-review`, `comment`, `upload` |
 | `next-task` | ✓ | Recommends the one unblocked issue to do next | `gh` |
 | `pr` | ✓ | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
 | `prune` | ✓ | Removes unused tests, dependencies, dead code, suppressions, workarounds, feature flags, assets, and config, and strengthens weak tests | `testing`, `modernize` for upgrades |

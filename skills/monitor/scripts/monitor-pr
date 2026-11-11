@@ -585,7 +585,7 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
     verdicts: dict[str, list[Verdict]] = {}
     reviewing: set[str] = set()
     looking: dict[str, float] = {}  # agent -> latest 👀 on this head
-    requested: set[str] = set()  # agents whose review the viewer requested on this head
+    requested: set[str] = set()  # agents whose review a person requested on this head
     activity = [head_at, *(c.finished for c in ci.values())]
 
     def note(agent: Agent, at: float, state: str | None, text: str, url: str) -> None:
@@ -631,7 +631,7 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
         login, is_bot = who(comment["author"])
         body, url = comment["body"] or "", comment["url"]
         at = timestamp(comment["lastEditedAt"] or comment["createdAt"])
-        if login == viewer and timestamp(comment["createdAt"]) >= head_at:
+        if not is_bot and timestamp(comment["createdAt"]) >= head_at:
             # Agents read a request only at the start of the comment, before any marker.
             for agent in AGENTS:
                 if any(re.match(rf"\s*{re.escape(request)}\b", body, re.IGNORECASE) for request in agent.requests):
