@@ -62,7 +62,7 @@ dependencies:
 
 ### As a Claude Code plugin
 
-The repository is also a [Claude Code plugin](https://code.claude.com/docs/en/plugins) named `adelrodriguez-skills`, which installs every skill at once from the `adelrodriguez` marketplace in this repository. Install the whole set, because the skills call each other. [Requirements](#requirements) lists the outside tools some skills need.
+The repository is also a [Claude Code plugin](https://code.claude.com/docs/en/plugins) named `adelrodriguez-skills`, which installs every skill at once from the `adelrodriguez` marketplace in this repository. Install the whole set, because the skills call each other. [Requirements](#requirements) lists the outside tools some skills need. Claude Code names plugin skills after the plugin, so type `/adelrodriguez-skills:retro` instead of `/retro`.
 
 To install it in a Claude Code session:
 
