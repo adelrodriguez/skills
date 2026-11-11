@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Check that the README lists every skill, that skills name only skills
 # this repository ships or the README's Requirements section names as "the `x` skill",
-# and that the Cursor plugin manifest and skill frontmatter are valid.
+# and that the Cursor and Claude Code plugin manifests and skill frontmatter are valid.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
@@ -72,13 +72,20 @@ for name, text in skills.items():
     if not re.search(r"^description: \S", frontmatter, re.M):
         errors.append(f"skills/{name}/SKILL.md: add a one-line frontmatter description")
 
-manifest = json.loads(pathlib.Path(".cursor-plugin/plugin.json").read_text())
-if not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", manifest.get("name", "")):
-    errors.append(".cursor-plugin/plugin.json: name must be lowercase kebab-case")
-if manifest.get("license") != pathlib.Path("LICENSE").read_text().split(" License", 1)[0]:
-    errors.append(".cursor-plugin/plugin.json: license must match LICENSE")
-if "logo" in manifest and not pathlib.Path(manifest["logo"]).is_file():
-    errors.append(f".cursor-plugin/plugin.json: logo {manifest['logo']} is not a file")
+license = pathlib.Path("LICENSE").read_text().split(" License", 1)[0]
+manifests = {path: json.loads(pathlib.Path(path).read_text()) for path in (".cursor-plugin/plugin.json", ".claude-plugin/plugin.json")}
+for path, manifest in manifests.items():
+    if not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", manifest.get("name", "")):
+        errors.append(f"{path}: name must be lowercase kebab-case")
+    if manifest.get("license") != license:
+        errors.append(f"{path}: license must match LICENSE")
+    if "logo" in manifest and not pathlib.Path(manifest["logo"]).is_file():
+        errors.append(f"{path}: logo {manifest['logo']} is not a file")
+if len({manifest.get("name") for manifest in manifests.values()}) != 1:
+    errors.append(".claude-plugin/plugin.json: name must match .cursor-plugin/plugin.json")
+marketplace = json.loads(pathlib.Path(".claude-plugin/marketplace.json").read_text())
+if [plugin.get("name") for plugin in marketplace.get("plugins", [])] != [manifests[".claude-plugin/plugin.json"].get("name")]:
+    errors.append(".claude-plugin/marketplace.json: list only the plugin that .claude-plugin/plugin.json names")
 
 for error in errors:
     print(error, file=sys.stderr)

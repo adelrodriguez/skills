@@ -15,6 +15,7 @@ My global instructions, which name some of these skills, live in [adelrodriguez/
 - [Install the skills](#install-the-skills)
   - [With the skills CLI](#with-the-skills-cli)
   - [With APM](#with-apm)
+  - [As a Claude Code plugin](#as-a-claude-code-plugin)
   - [As a Cursor plugin](#as-a-cursor-plugin)
 - [Requirements](#requirements)
 - [Skills](#skills)
@@ -57,6 +58,24 @@ dependencies:
         - pr
         - unslop
         - upload
+```
+
+### As a Claude Code plugin
+
+The repository is also a [Claude Code plugin](https://code.claude.com/docs/en/plugins) named `adelrodriguez-skills`, which installs every skill at once from the `adelrodriguez` marketplace in this repository. Install the whole set, because the skills call each other. [Requirements](#requirements) lists the outside tools some skills need.
+
+To install it in a Claude Code session:
+
+```text
+/plugin marketplace add adelrodriguez/skills
+/plugin install adelrodriguez-skills@adelrodriguez
+```
+
+To install it from a shell:
+
+```sh
+claude plugin marketplace add adelrodriguez/skills
+claude plugin install adelrodriguez-skills@adelrodriguez
 ```
 
 ### As a Cursor plugin

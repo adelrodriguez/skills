@@ -1,0 +1,15 @@
+{
+  "name": "adelrodriguez",
+  "owner": {
+    "name": "Adel Rodríguez",
+    "url": "https://github.com/adelrodriguez"
+  },
+  "description": "Adel Rodríguez's agent skills.",
+  "plugins": [
+    {
+      "name": "adelrodriguez-skills",
+      "source": "./",
+      "description": "Agent skills for pull requests, code review, testing, design, and writing that call each other as one set."
+    }
+  ]
+}
