@@ -72,7 +72,7 @@ def comment(body, at=LATER, author=None):
     }
 
 
-def snapshot(checks=(), reviews=(), comments=(), merge_state="CLEAN"):
+def snapshot(checks=(), reviews=(), comments=(), earlier=(), merge_state="CLEAN"):
     return {
         "url": "https://github.com/owner/repo/pull/1", "state": "OPEN", "headRefOid": HEAD,
         "baseRefName": "main", "mergeStateStatus": merge_state, "baseRef": {"target": {"oid": "c" * 40}},
@@ -81,6 +81,12 @@ def snapshot(checks=(), reviews=(), comments=(), merge_state="CLEAN"):
         "comments": {"nodes": list(comments)},
         "reactions": {"nodes": []},
         "reviewThreads": {"nodes": []},
+        # Check names on the PR's recent commits, as the query's `earlier` field returns them.
+        "earlier": {"nodes": [
+            {"commit": {"statusCheckRollup": {"contexts": {"nodes": [
+                {"kind": "CheckRun", "name": name, "checkSuite": {"app": {"slug": app}}} for name, app in earlier
+            ]}}}},
+        ]},
     }
 
 
@@ -102,10 +108,19 @@ class AgentStates(unittest.TestCase):
     def test_first_push_agent_that_reviewed_an_earlier_push_is_unrequested(self):
         self.assertEqual(states(snapshot(reviews=[BUGBOT_REVIEWED_OLD]), ["bugbot"]), {"bugbot": "unrequested"})
 
+    def test_check_run_on_an_earlier_push_counts_as_its_first_review(self):
+        # A clean Bugbot run leaves only a check run, with no review or comment.
+        pr = snapshot(earlier=[("Cursor Bugbot", "cursor")])
+        self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "unrequested"})
+
     def test_request_that_starts_with_the_command_counts(self):
         for request in ("@cursor review", "bugbot run"):
             pr = snapshot(reviews=[BUGBOT_REVIEWED_OLD], comments=[comment(f"{request}\n\n{MARKER}")])
             self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "waiting"}, request)
+
+    def test_longer_word_is_not_a_request(self):
+        pr = snapshot(reviews=[BUGBOT_REVIEWED_OLD], comments=[comment("@cursor reviewer, see above")])
+        self.assertEqual(states(pr, ["bugbot"]), {"bugbot": "unrequested"})
 
     def test_request_after_the_marker_does_not_count(self):
         # Bugbot ignored these on sanely #159 and #161.

@@ -38,6 +38,11 @@ Review agents approve the head with an approving review, a passing verdict
 check, or a comment that reports no remaining issues for that commit. Findings,
 silence, and resolved threads are not approval.
 
+Bugbot and Greptile review the PR's first push on their own, then only on
+request. Codex reviews only on request. The watcher waits for such an agent only
+after a request on the head. Once everything else is ready, it exits 1 with the
+comment that requests its review and the earlier commit it approved, if any.
+
 Exit codes
   0  the --until condition is met, or the PR merged
   1  you need to act: a required check failed, the branch conflicts, a review
@@ -51,6 +56,7 @@ Events
   - all checks finished on the head (one summary line)
   - a review agent approved, left findings, or failed on the head
   - a review agent went quiet on the head (--stall), with how to re-request it
+  - everything is ready except an on-request agent, with how to request it
   - a comment, review, thread, or reply from a person, including your own
     comments that lack the agent marker ("on behalf of")
   - the base branch moved and the new commits touch files in this PR
@@ -190,6 +196,7 @@ if TYPE_CHECKING:
         comments: Nodes[Comment]
         reactions: Nodes[Reaction]
         reviewThreads: Nodes[Thread]
+        earlier: Nodes[PastCommitNode]
 
     class Viewer(TypedDict):
         login: str
@@ -252,6 +259,22 @@ if TYPE_CHECKING:
     class Resolved(TypedDict):
         thread: Id
 
+    class RestCommit(TypedDict):
+        sha: str
+
+    class RestOutput(TypedDict):
+        title: str | None
+        summary: str | None
+
+    class RestCheckRun(TypedDict):
+        name: str
+        conclusion: str | None
+        app: App | None
+        output: RestOutput
+
+    class RestCheckRuns(TypedDict):
+        check_runs: list[RestCheckRun]
+
     class State(TypedDict):
         reported: list[str]
         base_oid: str | None
@@ -260,23 +283,28 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class Agent:
-    """A review agent: the logins it posts as, its check names, how to re-request it."""
+    """A review agent: the logins it posts as, its check names, the comments that request a review."""
 
     name: str
     logins: tuple[str, ...]
     checks: tuple[str, ...] = ()
-    trigger: str = ""
+    # The first one is the request the script suggests.
+    requests: tuple[str, ...] = ()
     # Codex reacts 👍 to the PR instead of reviewing when it finds nothing.
     thumbs_up_approves: bool = False
+    # "every push" reviews each new head on its own. "first push" reviews the PR's
+    # first push on its own and later pushes only on request. "on request" never
+    # reviews on its own.
+    reviews: Literal["every push", "first push", "on request"] = "every push"
 
 
 AGENTS = (
-    Agent("pullfrog", ("pullfrog",), ("pullfrog",), "@pullfrog review"),
-    Agent("codex", ("chatgpt-codex-connector",), trigger="@codex review", thumbs_up_approves=True),
-    Agent("coderabbit", ("coderabbitai",), ("coderabbit",), "@coderabbitai review"),
-    Agent("greptile", ("greptile-apps",), ("greptile",), "@greptileai review"),
+    Agent("pullfrog", ("pullfrog",), ("pullfrog",), ("@pullfrog review",)),
+    Agent("codex", ("chatgpt-codex-connector",), requests=("@codex review",), thumbs_up_approves=True, reviews="on request"),
+    Agent("coderabbit", ("coderabbitai",), ("coderabbit",), ("@coderabbitai review",)),
+    Agent("greptile", ("greptile-apps",), ("greptile",), ("@greptileai review",), reviews="first push"),
     Agent("macroscope", ("macroscopeapp", "macroscope-app"), ("macroscope",)),
-    Agent("bugbot", ("cursor",), ("cursor bugbot",), "@cursor review"),
+    Agent("bugbot", ("cursor",), ("cursor bugbot",), ("@cursor review", "bugbot run"), reviews="first push"),
 )
 
 # Verdicts in each agent's own wording. Findings win when a text has both, as in
@@ -293,12 +321,12 @@ APPROVAL = re.compile(
     + r"actionable comments posted:\s*0\b|confidence score:?\s*5\s*/\s*5|\b0 comments added|\blgtm\b",
     re.IGNORECASE,
 )
-RUN_FAILED = re.compile(r"\brun failed\b|review failed|this review did not happen|token expired or was revoked", re.IGNORECASE)
+RUN_FAILED = re.compile(r"\brun failed\b|\brun (was )?cancell?ed\b|review failed|this review did not happen|token expired or was revoked", re.IGNORECASE)
 # Agents edit one progress comment in place. Only its final form is a verdict.
 PROGRESS = re.compile(r"leaping into action|^\s*-\s\[ \]|\bin progress\b|working on (it|this)|reviewing\.\.\.|⏳", re.IGNORECASE | re.MULTILINE)
 # Posts the agent makes on the user's behalf. See the comment skill.
 AGENT_MARK = re.compile(r"on behalf of ", re.IGNORECASE)
-REVIEW_REQUEST = re.compile(r"^\s*@[\w-]+ review\b", re.IGNORECASE)
+REVIEW_REQUEST = re.compile(r"^\s*(@[\w-]+ review|bugbot run)\b", re.IGNORECASE)
 GRAPHITE_STACK = re.compile(r"app\.graphite\.(com|dev)/github/pr/")
 
 FAILED_CONCLUSIONS = {"FAILURE", "TIMED_OUT", "ACTION_REQUIRED", "STARTUP_FAILURE", "CANCELLED", "STALE"}
@@ -336,6 +364,10 @@ query($owner: String!, $name: String!, $number: Int!) {
       reviews(last: 100) { nodes { databaseId url state body submittedAt commit { oid } author { login kind: __typename } } }
       comments(last: 100) { nodes { databaseId url body createdAt lastEditedAt author { login kind: __typename } } }
       reactions(last: 50) { nodes { content createdAt user { login kind: __typename } } }
+      earlier: commits(last: 30) { nodes { commit { statusCheckRollup { contexts(first: 50) { nodes {
+        kind: __typename
+        ... on CheckRun { name checkSuite { app { slug } } }
+      } } } } } }
       reviewThreads(last: 100) { nodes {
         id isResolved path line
         root: comments(first: 1) { nodes { databaseId } }
@@ -509,7 +541,7 @@ class Verdict:
 @dataclass
 class AgentStatus:
     agent: Agent
-    state: str  # reviewing, approved, findings, failed, or waiting
+    state: str  # reviewing, approved, findings, failed, waiting, or unrequested
     verdict: Verdict | None
 
 
@@ -553,6 +585,7 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
     verdicts: dict[str, list[Verdict]] = {}
     reviewing: set[str] = set()
     looking: dict[str, float] = {}  # agent -> latest 👀 on this head
+    requested: set[str] = set()  # agents whose review the viewer requested on this head
     activity = [head_at, *(c.finished for c in ci.values())]
 
     def note(agent: Agent, at: float, state: str | None, text: str, url: str) -> None:
@@ -569,6 +602,13 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
             else:
                 state = classify(check.text) or ("findings" if check.state == "fail" else None)
                 note(agent, check.finished, state, check.text, check.url)
+
+    # A clean run of some agents leaves only a check run on the commit it reviewed.
+    for node in pr["earlier"]["nodes"]:
+        rollup = node["commit"]["statusCheckRollup"]
+        for context in rollup["contexts"]["nodes"] if rollup else []:
+            if context["kind"] == "CheckRun" and (agent := agent_for_check(context["name"], app_slug(context["checkSuite"]))):
+                agents[agent.name] = agent
 
     items: list[Item] = []
     for review in pr["reviews"]["nodes"]:
@@ -591,6 +631,12 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
         login, is_bot = who(comment["author"])
         body, url = comment["body"] or "", comment["url"]
         at = timestamp(comment["lastEditedAt"] or comment["createdAt"])
+        if login == viewer and timestamp(comment["createdAt"]) >= head_at:
+            # Agents read a request only at the start of the comment, before any marker.
+            for agent in AGENTS:
+                if any(re.match(rf"\s*{re.escape(request)}\b", body, re.IGNORECASE) for request in agent.requests):
+                    requested.add(agent.name)
+                    activity.append(timestamp(comment["createdAt"]))
         if agent := agent_for(login):
             agents[agent.name] = agent
             sha = reviewed_commit(body)
@@ -647,6 +693,8 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
             )
             items.append(Item(f"c:{comment['databaseId']}", line, not thread["isResolved"] and not answered))
 
+    # Agents that reviewed some commit of this PR, before `expected` adds the ones that never did.
+    engaged = set(agents)
     if require == ["none"]:
         required_agents: list[Agent] = []
     elif require:
@@ -659,7 +707,11 @@ def analyze(pr: PullRequest, viewer: str, required_checks: set[str], require: li
     for agent in required_agents:
         latest = max(verdicts.get(agent.name, []), key=lambda v: v.at, default=None)
         busy = agent.name in reviewing or looking.get(agent.name, 0.0) > (latest.at if latest else 0.0)
-        statuses.append(AgentStatus(agent, "reviewing" if busy else latest.state if latest else "waiting", latest))
+        # Once an agent has no review of its own to come, it waits for a request, not for the clock.
+        automatic = agent.reviews == "every push" or (agent.reviews == "first push" and agent.name not in engaged)
+        unrequested = not automatic and agent.name not in requested
+        state = "reviewing" if busy else latest.state if latest else "unrequested" if unrequested else "waiting"
+        statuses.append(AgentStatus(agent, state, latest))
 
     return Status(
         pr, viewer, head, head_at, ci, gate, statuses, max(activity), items, open_threads, answered_threads,
@@ -690,8 +742,8 @@ def logs_hint(repo: str, url: str) -> str:
 
 
 def request_hint(agent: Agent) -> str:
-    if agent.trigger:
-        return f'post "{agent.trigger}" with the agent marker'
+    if agent.requests:
+        return f'post "{agent.requests[0]}" as the first line, with the agent marker after it'
     return "request a review through the repository's supported mechanism"
 
 
@@ -936,6 +988,26 @@ class Watcher:
             return f"; up to date with {base}"
         return f"; {count} commit{'' if count == '1' else 's'} behind {base}"
 
+    def earlier_approval(self, agent: Agent, head: str) -> str | None:
+        """The earlier commit of this PR that the agent last reviewed, when that review approved it."""
+        try:
+            commits = cast("list[RestCommit]", json.loads(gh("api", f"repos/{self.repo}/pulls/{self.pr}/commits?per_page=100")))
+            for commit in reversed(commits):
+                sha = commit["sha"]
+                if same_commit(sha, head):
+                    continue
+                runs = cast("RestCheckRuns", json.loads(gh("api", f"repos/{self.repo}/commits/{sha}/check-runs?per_page=100")))
+                for run in runs["check_runs"]:
+                    if agent_for_check(run["name"], (run["app"] or {}).get("slug", "")) == agent:
+                        output = run["output"]
+                        text = f"{output['title'] or ''}\n{output['summary'] or ''}"
+                        state = classify(text) or ("findings" if run["conclusion"] in ("failure", "timed_out") else None)
+                        if state:
+                            return sha if state == "approved" else None
+        except (GhError, ValueError, KeyError) as error:
+            log(f"could not read {agent.name}'s earlier reviews: {error}")
+        return None
+
     def poll(self) -> None:
         pr, viewer = fetch(self.repo, self.pr)
         if pr["state"] == "MERGED":
@@ -1039,6 +1111,13 @@ class Watcher:
             self.finish(1, [f"blocked on {short}: {summary}", *problems])
         if merge_state == "BEHIND":
             self.finish(1, [behind_line])
+        if unrequested := [a for a in status.agents if a.state == "unrequested"]:
+            lines = [f"ready for an on-request review on {short}: {summary}"]
+            for a in unrequested:
+                lines.append(f"{a.agent.name} reviews only on request; {request_hint(a.agent)}")
+                if approved := self.earlier_approval(a.agent, head):
+                    lines.append(f"{a.agent.name} approved {approved[:7]}; compare: git diff {approved[:7]}..{short}")
+            self.finish(1, lines)
         self.finish(0, [f"ready on {short}: {summary}{self.behind(base, base_oid, head)}"])
 
     def run(self) -> NoReturn:
@@ -1083,7 +1162,7 @@ def show(repo: str, number: int, require: list[str] | None) -> None:
         verdict = agent.verdict
         if agent.state in ("findings", "failed") and verdict:
             print(f"\n[{agent.agent.name} {agent.state}] {verdict.url}\n{excerpt(verdict.text)}")
-        elif agent.state in ("waiting", "failed"):
+        elif agent.state in ("waiting", "failed", "unrequested"):
             print(f"\n[{agent.agent.name} {agent.state}] {request_hint(agent.agent)}")
     print_threads(status)
 
