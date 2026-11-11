@@ -8,5 +8,6 @@
   "homepage": "https://github.com/adelrodriguez",
   "repository": "https://github.com/adelrodriguez/skills",
   "license": "MIT",
+  "logo": "assets/icon.png",
   "keywords": ["skills", "pull-requests", "code-review", "testing", "design", "writing", "github"]
 }

@@ -77,6 +77,8 @@ if not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", manifest.get("name", ""
     errors.append(".cursor-plugin/plugin.json: name must be lowercase kebab-case")
 if manifest.get("license") != pathlib.Path("LICENSE").read_text().split(" License", 1)[0]:
     errors.append(".cursor-plugin/plugin.json: license must match LICENSE")
+if "logo" in manifest and not pathlib.Path(manifest["logo"]).is_file():
+    errors.append(f".cursor-plugin/plugin.json: logo {manifest['logo']} is not a file")
 
 for error in errors:
     print(error, file=sys.stderr)
