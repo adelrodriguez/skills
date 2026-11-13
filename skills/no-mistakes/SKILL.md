@@ -90,7 +90,7 @@ Delete the `<branch>-spike` branch if you created it. Follow `full-send` from "F
 
 When a CI failure or review comment leads to a behavior change after the pull request opens, run the claims' proofs again and send the full diff back to the council before the pull request counts as ready or merges.
 
-The step is done when the council approved the latest head, and the pull request either meets `full-stop`'s readiness check or `full-send` merged it.
+The step is done when the council's approval covers the latest behavior change, and the pull request either meets `full-stop`'s readiness check or `full-send` merged it.
 
 ## Return the result
 
@@ -101,7 +101,7 @@ Report the pull request URL, the claims ledger with its evidence, the council's 
 ## Check the run
 
 - Every claim in the ledger has a proof that observes behavior and evidence from this session.
-- Every council member approved the design and the latest head, or the report names the shortfall.
+- Every council member approved the design and the latest behavior change, or the report names the shortfall.
 - The change was rebuilt on a fresh branch from the base, and no spike branch you created remains.
 - The blind tests ran without access to the implementation.
 - Every line of the diff serves a claim or a required check.
