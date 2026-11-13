@@ -12,19 +12,27 @@ Take the task to a pull request that is ready to merge, with no mistake left for
 
 A no-mistakes request grants the testing and branch permissions of the `full-stop` skill and keeps the pull request unmerged as `full-stop` describes. When the user also says "full send", follow `full-send` to the merge instead.
 
-The council approves the design and the final diff in place of the user. Do not wait for the user's agreement on a design, a dry run, or a structural change, even where another skill or the user's instructions ask for it. The request also counts as the fix request for `footguns` and `harden-ui`. Make their decisions yourself, record them in the ledger, and skip their closing questions.
+The council approves the design and the final diff in place of the user. Do not wait for the user's agreement on a design, a dry run, or a structural change, even where another skill or the user's instructions ask for it. The request also approves `prune`'s proven removals, and counts as the fix request for `footguns` and `harden-ui`. Make the decisions of `footguns` and `harden-ui` yourself, record them in the ledger, and skip their closing questions. List `prune`'s Ask candidates as follow-ups.
 
-Ask the user only under `full-send`'s "Ask when blocked" conditions, when an ambiguity changes a claim, or when a finding stays disputed after two replies, as `code-review` describes. Ask through the harness's question tool, as `full-send` describes.
+Ask the user only under `full-send`'s "Ask when blocked" conditions, when an ambiguity changes a claim, when a finding stays disputed after two replies, as `code-review` describes, or when a council reaches its round limit without approval. Ask through the harness's question tool, as `full-send` describes, and do not start the next step until the user answers. Record each answer in the ledger. For a disputed finding or a round limit, the user's decision on each open finding resolves it, and a request for another pass starts a new council pass. When such an answer does neither, stop the run and report.
 
 ## Choose the council
 
-Use the `council-review` skill with three reviewers. Spread them across every provider the agent tools offer, so at least two providers review each round. When the user names models, use those. When only one provider is available, use it and name the shortfall in the report.
+Use the `council-review` skill with three reviewers on at least two providers. When the user names models, use those instead. When the reviewers end up on one provider, record the shortfall for the report.
 
-Allow three rounds for the design and five for the code. Approval needs every member to approve the current version, with no blocker or should finding open.
+Each council pass gets three rounds for a design and five for code. Revisions inside a pass count toward its limit. A design sent back from the spike or the rebuild, and a re-review after the pull request opens, each start a new pass.
+
+Every round reviews the whole proposal and ledger, or the whole diff from the base. In the reviewer brief, this replaces the instructions in `council-review` and `code-review` to check only revised sections, open findings, or changed code.
+
+The council approves when every member approves the same version, when a round returns only nits, or when the user decided each finding that stayed open.
+
+The step is done when the reviewers are named, three or the set the user named, and they cover at least two providers or the shortfall is recorded.
 
 ## Write the claims
 
-Read the task, the code it touches, and the repository's `AGENTS.md`, `CODING_STANDARDS.md`, and `GLOSSARY.md` when they exist. Write the claims ledger at `$(git rev-parse --git-dir)/no-mistakes.md`, outside the working tree. Each claim is one behavior the finished change must have, with the check that will prove it. For example:
+Read the task, the code it touches, and the repository's `AGENTS.md`, `CODING_STANDARDS.md`, and `GLOSSARY.md` when they exist. Choose the base, which is the default branch unless the task names another, and a name for the delivery branch that no existing branch uses.
+
+Write the claims ledger at `$(git rev-parse --git-common-dir)/no-mistakes/<delivery-branch>.md`, outside the working tree. Each claim is one behavior the finished change must have, with the check that will prove it. For example:
 
 ```
 | Claim | Proof | Evidence |
@@ -34,27 +42,31 @@ Read the task, the code it touches, and the repository's `AGENTS.md`, `CODING_ST
 | Out of scope: resending invites | | |
 ```
 
-The step is done when every claim has a proof that observes behavior, the out-of-scope rows are listed, and every ambiguity that changes a claim is resolved.
+The step is done when the base and delivery branch are named, every claim has a proof that observes behavior, the out-of-scope rows are listed, and every ambiguity that changes a claim is resolved.
 
 ## Design the change
 
-Follow the `codebase-design` skill through its proposal. Send the proposal and the claims ledger to the council as a proposal review. Revise until the council approves.
+Follow the `codebase-design` skill through its proposal. Send the proposal and the claims ledger to the council as a proposal review.
 
-The step is done when every council member approves the same version of the design.
+The step is done when the council approves the design.
 
 ## Spike the change
 
-Build the approved design quickly on a local branch named `<branch>-spike`, to find the constraints the design missed. Never push the spike. When work for the task already exists, that work is the spike. Leave its branch and any pull request for it untouched, and rebuild on a new branch.
+When work for the task already exists, that work is the spike. When it has uncommitted changes, create `<delivery-branch>-spike` from its head and commit them there. Leave the original branch as it was, and disable auto-merge on its pull request if it has one.
 
-Record in the ledger each constraint the spike revealed, each claim that turned out wrong, and each workaround it needed. When a constraint changes the design, revise it and send it back to the council.
+Otherwise, create `<delivery-branch>-spike` from the base, build the approved design quickly to find the constraints the design missed, and commit it.
 
-The step is done when the ledger records which claims the spike passes and fails, and every constraint it revealed is in the ledger or the council has approved a revised design.
+Never push the spike.
+
+Record in the ledger which claims the spike passes and fails, each constraint it revealed, and each workaround it needed. When a constraint changes the design, revise the design and send it back to the council.
+
+The step is done when the ledger records the spike's results and constraints, the council approves a revision for every constraint that changes the design, and the working tree is clean.
 
 ## Rebuild the change
 
-Create a fresh branch from the base, and rebuild the change from the approved design and the ledger. Read the spike as a reference, but do not copy a workaround that the design now makes unnecessary.
+Create the delivery branch from the base, and rebuild the change from the approved design and the ledger. Read the spike as a reference, but do not copy a workaround that the design now makes unnecessary. When the rebuild cannot follow the approved design, revise the design, and continue once the council approves it.
 
-Order the commits so the history makes the case. Removals come before reshaping, scaffolding before the feature, and a failing test before its fix, as the `testing` skill describes. Every commit passes the repository's checks, except that a failing-test commit fails only on its new test.
+Order the commits so the history makes the case. Removals come before reshaping, scaffolding before the failing test, and a failing test before its fix. Every commit passes the repository's checks, except that a failing-test commit fails only on its new test.
 
 The step is done when `git diff <base>` holds only the change the design describes, and every commit meets the check rule.
 
@@ -62,47 +74,48 @@ The step is done when `git diff <base>` holds only the change the design describ
 
 Prove each claim with the check the ledger names, and write the evidence next to it. Follow `full-send`'s "Prove the change" for what counts as evidence. Then add these checks:
 
-- Start a subagent on a different model, with fresh context, in a separate checkout of the base, so the implementation is not on disk. Give it only the claims ledger, the public interface's signatures, and the repository's test setup. Ask it for tests that try to break each claim. Run them and the spike's tests against the rebuild. Each failure is a code bug or a claim to correct. Keep only the tests that cover behavior no existing test covers.
-- Run the `footguns` skill on the changed paths, and fix each confirmed footgun that the change introduced.
-- For UI, run the `harden-ui` skill on the changed screens, and fix each break that the change introduced.
+- Export the base with `git archive <base> | tar -x -C <empty directory>`, using a directory outside the repository, so the copy has no `.git` and no branch with the implementation. Start a subagent on a different model, with fresh context and that directory as its working directory, and tell it to read only that directory. Give it the Claim column, the public interface's signatures, and the repository's test setup, but not the ledger's spike notes. Ask it for tests that try to break each claim. Copy its tests onto the delivery branch and run them. Each failure is a code bug or a claim to correct. Keep only the tests that cover behavior no existing test covers.
+- Run the spike's tests on the delivery branch. Delete a spike test that fails only because it relies on a workaround the design dropped. Keep only the spike tests that cover behavior no other test covers.
+- Run the `footguns` skill on the changed paths, and fix each Confirmed footgun that the change introduced.
+- For UI, run the `harden-ui` skill on the changed screens, and fix each break that the change introduced. Leave its switch and worst-case fixtures out of the diff, and keep a regression test for each fixed break when the test runner can render the component. Otherwise, record a screenshot of the fix in the ledger.
 
-List the defects that existed before the change as follow-ups instead of fixing them.
+List the defects that existed before the change, and Plausible footguns, as follow-ups instead of fixing them.
 
-Add each fix after the rebuild's commits, as its own commit that names the claim or finding it answers. Do not weaken, skip, or delete a test to make it pass.
+Add each fix after the rebuild's commits, with its test in the same commit as `footguns` does, and a message that names the claim or finding it answers. Apart from the spike tests above, do not weaken, skip, or delete a test to make it pass.
 
-The step is done when every claim has evidence from this session, and every blind test passes or was corrected along with its claim.
+The step is done when every claim has evidence from this session, and either the tester returned at least one test that ran on the delivery branch, with every blind test passing or corrected along with its claim, or no other model or no subagent tool was available.
 
 ## Cut what the change does not need
 
-Review the diff by subtraction, as the `restraint` skill describes. Run the `prune` skill on the changed paths. When the change introduces a pattern that the rest of the repository does not follow, use the existing pattern instead, or list the sweep as a follow-up issue.
+Review the diff by subtraction, as the `restraint` skill describes. Run the `prune` skill on what the change added or left unused, and list other candidates as follow-ups. When the change introduces a pattern that the rest of the repository does not follow, use the existing pattern instead, or list the sweep as a follow-up issue.
 
-The step is done when every line of the diff serves a claim or a check the skills above require, and the checks still pass.
+The step is done when every line of the diff serves a claim or a fixed finding, and every claim's proof passes again on the cut head.
 
 ## Review the diff
 
-Run the council on the full diff from the base. Every round reviews the whole diff, not only what changed since the last round. After each fix, run the claims' proofs again. This review replaces `full-send`'s "Review the change" step.
+Run the council on the full diff from the base. After each fix, run the claims' proofs again.
 
-The step is done when every council member approves the same head.
+The step is done when the council approves the diff.
 
 ## Hand off the pull request
 
-Delete the `<branch>-spike` branch if you created it. Follow `full-send` from "File the PR", with `full-stop`'s overrides unless the user said "full send". Put the claims ledger, with its evidence, in the pull request description.
+Delete the `<delivery-branch>-spike` branch if you built the spike yourself. Keep a spike branch that you created to commit existing work, because it holds the only copy of that work. Follow `full-send` from "File the PR", with `full-stop`'s overrides unless the user said "full send". Put the claims ledger, with its evidence, in the pull request description, and link the pull request of any existing work that served as the spike.
 
 When a CI failure or review comment leads to a behavior change after the pull request opens, run the claims' proofs again and send the full diff back to the council before the pull request counts as ready or merges.
 
-The step is done when the council's approval covers the latest behavior change, and the pull request either meets `full-stop`'s readiness check or `full-send` merged it.
+The step is done when the council approves the latest behavior change, and the pull request either meets `full-stop`'s readiness check or `full-send` merged it.
 
 ## Return the result
 
 When the run had less than it needed, such as a single provider, no subagents, or no browser, say so on the first line and name what you used instead.
 
-Report the pull request URL, the claims ledger with its evidence, the council's verdicts for each design round, its score table for the code, the constraints the spike revealed, and the follow-ups. List the mistake types the council found more than once as candidates for the `coding-standards` skill. When the report ends with a question for the user, put the question last.
+Report the pull request URL, the claims ledger with its evidence, the council's verdicts for each design round, its score table for the code, the constraints the spike revealed, and the follow-ups. When you created a spike branch to commit existing work, name it. If that work has a pull request, name it and ask whether to close it. List the mistake types the council found more than once as candidates for the `coding-standards` skill. When the report ends with a question for the user, put the question last.
 
 ## Check the run
 
 - Every claim in the ledger has a proof that observes behavior and evidence from this session.
-- Every council member approved the design and the latest behavior change, or the report names the shortfall.
-- The change was rebuilt on a fresh branch from the base, and no spike branch you created remains.
-- The blind tests ran without access to the implementation.
-- Every line of the diff serves a claim or a required check.
+- The council approved the design and the latest behavior change.
+- The change was rebuilt on the delivery branch from the base. A spike you built yourself was deleted, and any spike branch you created to commit existing work remains.
+- The blind tests ran from an export of the base with no access to the implementation, or the report's first line says why they did not run.
+- Every line of the diff serves a claim or a fixed finding.
 - The pull request is open and unmerged, unless the user said "full send".
