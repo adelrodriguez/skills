@@ -62,9 +62,11 @@ The step is done when `git diff <base>` holds only the change the design describ
 
 Prove each claim with the check the ledger names, and write the evidence next to it. Follow `full-send`'s "Prove the change" for what counts as evidence. Then add these checks:
 
-- Give a subagent on a different model only the claims ledger, the public interface, and the repository's test setup, without the implementation. Ask it for tests that try to break each claim. Run them and the spike's tests against the rebuild. Each failure is a code bug or a claim to correct. Keep only the tests that cover behavior no existing test covers.
+- Start a subagent on a different model, with fresh context, in a separate checkout of the base, so the implementation is not on disk. Give it only the claims ledger, the public interface's signatures, and the repository's test setup. Ask it for tests that try to break each claim. Run them and the spike's tests against the rebuild. Each failure is a code bug or a claim to correct. Keep only the tests that cover behavior no existing test covers.
 - Run the `footguns` skill on the changed paths, and fix each confirmed footgun that the change introduced.
-- For UI, run the `harden-ui` skill on the changed screens, and fix each break.
+- For UI, run the `harden-ui` skill on the changed screens, and fix each break that the change introduced.
+
+List the defects that existed before the change as follow-ups instead of fixing them.
 
 Add each fix after the rebuild's commits, as its own commit that names the claim or finding it answers. Do not weaken, skip, or delete a test to make it pass.
 
