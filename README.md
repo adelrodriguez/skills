@@ -96,7 +96,7 @@ Every skill needs an agent that loads Agent Skills, such as Claude Code, Codex, 
 
 - **GitHub CLI.** The skills that work with pull requests and issues run [`gh`](https://cli.github.com), and it must be logged in.
 - **Boat.** `boat` needs the [Boat CLI](https://docs.boat.dev/quickstart), a signed-in account with sandbox access, and `jq` for its shell examples. Integrated agents also need configured model access.
-- **Subagents.** `code-review`, `council-review`, `codebase-design`, and `design-review` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `footguns`, `how`, `why`, and `prune` use subagents when they can, and do the work themselves when they can't.
+- **Subagents.** `code-review`, `council-review`, `codebase-design`, `design-review`, and `no-mistakes` start other agents, so the agent must be able to run subagents. `hillclimb` needs them only for a judged hill, where a council scores the work. `footguns`, `how`, `why`, and `prune` use subagents when they can, and do the work themselves when they can't.
 - **A browser tool.** `design-ui`, `design-review`, and `harden-ui` take screenshots of the rendered page. Without one, they check the code instead and say which checks did not run.
 - **Python.** `monitor` runs `scripts/monitor-pr`, which needs Python 3.
 - **A public file bucket.** `upload` stores files in a Cloudflare R2 bucket with a public URL, using curl 7.75 or later. It reads the bucket settings from `FILE_UPLOAD_*` environment variables, which the machine must load. See [`upload/SKILL.md`](skills/upload/SKILL.md) for the list.
@@ -133,6 +133,7 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `modernize` | ✓ | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
 | `monitor` | ✓ | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `code-review`, `comment`, `upload` |
 | `next-task` | ✓ | Recommends the one unblocked issue to do next | `gh` |
+| `no-mistakes` |  | Takes a task to a ready pull request with a council-approved design, a clean rebuild from the base, and evidence for every claim | Subagents, `council-review`, `codebase-design`, `testing`, `footguns`, `harden-ui`, `restraint`, `prune`, `full-stop`, `full-send` |
 | `pr` | ✓ | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
 | `prune` | ✓ | Removes unused tests, dependencies, dead code, suppressions, workarounds, feature flags, assets, and config, and strengthens weak tests | `testing`, `modernize` for upgrades |
 | `refresh` | ✓ | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
