@@ -14,7 +14,7 @@ A no-mistakes request grants the testing and branch permissions of the `full-sto
 
 The council approves the design and the final diff in place of the user. Do not wait for the user's agreement on a design, a dry run, or a structural change, even where another skill or the user's instructions ask for it. The request also counts as the fix request for `footguns` and `harden-ui`. Make their decisions yourself, record them in the ledger, and skip their closing questions.
 
-Ask the user only under `full-send`'s "Ask when blocked" conditions, when an ambiguity changes a claim, or when a finding stays disputed after the council's round limit. Ask through the harness's question tool, as `full-send` describes.
+Ask the user only under `full-send`'s "Ask when blocked" conditions, when an ambiguity changes a claim, or when a finding stays disputed after two replies, as `code-review` describes. Ask through the harness's question tool, as `full-send` describes.
 
 ## Choose the council
 
@@ -48,7 +48,7 @@ Build the approved design quickly on a local branch named `<branch>-spike`, to f
 
 Record in the ledger each constraint the spike revealed, each claim that turned out wrong, and each workaround it needed. When a constraint changes the design, revise it and send it back to the council.
 
-The step is done when the spike passes the claims' proofs, and every constraint it revealed is in the ledger or the council has approved a revised design.
+The step is done when the ledger records which claims the spike passes and fails, and every constraint it revealed is in the ledger or the council has approved a revised design.
 
 ## Rebuild the change
 
@@ -88,9 +88,9 @@ The step is done when every council member approves the same head.
 
 Delete the `<branch>-spike` branch if you created it. Follow `full-send` from "File the PR", with `full-stop`'s overrides unless the user said "full send". Put the claims ledger, with its evidence, in the pull request description.
 
-When a CI failure or review comment leads to a behavior change after the pull request opens, run the claims' proofs again and send the full diff back to the council before the pull request counts as ready.
+When a CI failure or review comment leads to a behavior change after the pull request opens, run the claims' proofs again and send the full diff back to the council before the pull request counts as ready or merges.
 
-The step is done when the council approved the latest head and the pull request meets `full-stop`'s readiness check, or `full-send` reports it merged.
+The step is done when the council approved the latest head, and the pull request either meets `full-stop`'s readiness check or `full-send` merged it.
 
 ## Return the result
 
