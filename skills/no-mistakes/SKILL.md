@@ -54,7 +54,7 @@ The step is done when the council approves the design.
 
 When work for the task already exists, that work is the spike. When it has uncommitted changes, create `<delivery-branch>-spike` from its head and commit them there. Leave the original branch as it was, and disable auto-merge on its pull request if it has one.
 
-Otherwise, create `<delivery-branch>-spike` from the base, build the approved design quickly to find the constraints the design missed, and commit it.
+Otherwise, create the spike from the base with `git switch --no-track -c <delivery-branch>-spike <base>`, so it does not track the default branch. Build the approved design quickly to find the constraints the design missed, and commit it.
 
 Never push the spike.
 
@@ -64,7 +64,7 @@ The step is done when the ledger records the spike's results and constraints, th
 
 ## Rebuild the change
 
-Create the delivery branch from the base, and rebuild the change from the approved design and the ledger. Read the spike as a reference, but do not copy a workaround that the design now makes unnecessary. When the rebuild cannot follow the approved design, revise the design, and continue once the council approves it.
+Create the delivery branch from the base with `git switch --no-track -c <delivery-branch> <base>`, and rebuild the change from the approved design and the ledger. Read the spike as a reference, but do not copy a workaround that the design now makes unnecessary. When the rebuild cannot follow the approved design, revise the design, and continue once the council approves it.
 
 Order the commits so the history makes the case. Removals come before reshaping, scaffolding before the failing test, and a failing test before its fix. Every commit passes the repository's checks, except that a failing-test commit fails only on its new test.
 
@@ -74,19 +74,19 @@ The step is done when `git diff <base>` holds only the change the design describ
 
 Prove each claim with the check the ledger names, and write the evidence next to it. Follow `full-send`'s "Prove the change" for what counts as evidence. Then add these checks:
 
-- Export the base with `git archive <base> | tar -x -C <directory>` into a new directory from `mktemp -d`, so the copy has no `.git` and no branch with the implementation. The request covers that directory. Start a subagent on a different model, with fresh context and that directory as its working directory, and tell it to read only that directory. Give it the Claim column, the public interface's signatures, and the repository's test setup, but not the ledger's spike notes. Ask it for tests that try to break each claim. Copy its tests onto the delivery branch and run them. Each failure is a code bug, a claim to correct, or a test that asserts what no claim states. Narrow a test of the last kind to what its claim states, and record why in the ledger. Keep only the tests that cover behavior no existing test covers.
+- Export the base with `git archive <base> | tar -x -C <directory>` into a new directory from `mktemp -d`, so the copy has no `.git` and no branch with the implementation. The request covers that directory. Start a subagent on a different model, with fresh context and that directory as its working directory, and tell it to read only that directory. Give it the Claim column, the public interface's signatures, and the repository's test setup, but not the ledger's spike notes. Ask it for tests that try to break each claim. Copy its tests onto the delivery branch and run them. Each failure is a code bug, a claim to correct, or a test that asserts what no claim states. Narrow a test of the last kind to what its claim states, or delete it when no claim covers it, and record why in the ledger. When no other model is available, use a fresh subagent on the same model and record the shortfall. Keep only the tests that cover behavior no existing test covers.
 - Run the spike's tests on the delivery branch. Delete a spike test that fails only because it relies on a workaround the design dropped. Keep only the spike tests that cover behavior no other test covers.
 - Run the `footguns` skill on the changed paths, and fix each Confirmed footgun that the change introduced.
 - For UI, run the `harden-ui` skill on the changed screens, and fix each break that the change introduced. Leave its switch and worst-case fixtures out of the diff, and keep a regression test for each fixed break when the test runner can render the component. Otherwise, record a screenshot of the fix in the ledger.
 
 List the defects that existed before the change, and Plausible footguns, as follow-ups instead of fixing them.
 
-Add each fix after the rebuild's commits, with its test in the same commit as `footguns` does, and a message that names the claim or finding it answers. Apart from the spike tests and the narrowed blind tests above, do not weaken, skip, or delete a test to make it pass.
+Add each fix after the rebuild's commits, with its test in the same commit as `footguns` does, and a message that names the claim or finding it answers. Apart from the spike tests and the blind tests narrowed or deleted above, do not weaken, skip, or delete a test to make it pass.
 
 The step is done when all of these hold:
 
 - Every claim has evidence from this session.
-- The blind tests ran on the delivery branch, and each one passes, was corrected along with its claim, or was narrowed to its claim. When the tester found no behavior it could test from outside, its reason is in the ledger. When no other model was available, the shortfall is recorded.
+- The blind tests ran on the delivery branch, and each one passes, was corrected along with its claim, was narrowed to its claim, or was deleted because no claim covers it. When the tester found no behavior it could test from outside, its reason is in the ledger. When no other model was available, the shortfall is recorded.
 - Each spike test passes, or was deleted because it relied on a dropped workaround.
 - `footguns` ran on the changed paths, and each Confirmed footgun the change introduced is fixed with its test.
 - For UI, `harden-ui` ran on the changed screens, and each break the change introduced is fixed.
@@ -95,7 +95,7 @@ The step is done when all of these hold:
 
 Review the diff by subtraction, as the `restraint` skill describes. Run the `prune` skill on what the change added or left unused, and list other candidates as follow-ups. Fold each cut into the commit that added the code. When the change introduces a pattern that the rest of the repository does not follow, use the existing pattern instead, or list the sweep as a follow-up.
 
-The step is done when every line of the diff serves a claim or a fixed finding, and every claim's proof passes again on the cut head.
+The step is done when every line of the diff serves a claim or a fixed finding, every claim's proof passes again on the cut head, and every commit still meets the rebuild's check rule.
 
 ## Review the diff
 
@@ -123,6 +123,6 @@ Report the pull request URL, the claims ledger with its evidence, the council's 
 - The council approved the design and the latest behavior change.
 - The change was rebuilt on the delivery branch from the base. A spike you built yourself was deleted, and any spike branch you created to commit existing work remains.
 - `footguns`, the spike tests, and for UI `harden-ui` ran, and each problem the change introduced is fixed.
-- The blind tests ran from an export of the base with no access to the implementation, or the report's first line says why they did not run.
+- The blind tests ran from an export of the base with no access to the implementation, or the tester's reason for finding nothing to test is in the ledger.
 - Every line of the diff serves a claim or a fixed finding.
 - The pull request is open and unmerged, unless the user said "full send".
