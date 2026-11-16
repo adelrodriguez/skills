@@ -20,9 +20,11 @@ For example, `/council-review Codex, Claude, Gemini, 5 rounds` uses one reviewer
 
 ## Run each round
 
+Before you start the first round, say `THE COUNCIL IS IN SESSION` on its own line.
+
 Replace the single reviewer with the council. Start each reviewer with a separate context and the same brief and version of the work. Run reviewers in parallel when supported, or in batches without sharing earlier responses. Keep the work unchanged until every reviewer responds.
 
-Give findings a distinct prefix per reviewer, such as `C1-1` and `C2-1`. For code reviews, also request a score out of 10. Collect every response before comparing findings. Group duplicates while retaining their reviewer IDs, and verify evidence rather than counting votes.
+Give findings a distinct prefix per reviewer, such as `C1-1` and `C2-1`. For code reviews, also request a score out of 10. Collect every response before comparing findings. When every reviewer has responded, say `THE COUNCIL HAS REACHED A VERDICT` on its own line. Group duplicates while retaining their reviewer IDs, and verify evidence rather than counting votes.
 
 One round includes a review from every council member. A missing response leaves the round incomplete. After fixes, send the updated work and finding outcomes to every reviewer. Approval requires every member to approve the current work. Scores do not replace verdicts.
 
@@ -30,7 +32,7 @@ For a proposal, replace the code diff with the document or question, constraints
 
 ## Report the council results
 
-Use the report required by `code-review`, with the actual model and outcome for each reviewer. Fewer reviewers than requested, or a round with a missing response, is a shortfall for the first line that `code-review` requires. For code reviews, add a score table with one row per reviewer, columns for the reviewer number, full model name, and reasoning effort, and one column per round. Keep the reviewer number in its own column. If several reviewers use the same model, repeat the model name in separate rows. Write `no score` when a reviewer omits a score and `not completed` when a review is missing.
+Say `THE COUNCIL HAS SPOKEN` on its own line. On the next line, say `THE COUNCIL APPROVES` when every member approved the current work, or `THE COUNCIL IS ADJOURNED WITHOUT CONSENSUS` otherwise. Then give the report. Use the report required by `code-review`, with the actual model and outcome for each reviewer. Fewer reviewers than requested, or a round with a missing response, is a shortfall for the first line that `code-review` requires. For code reviews, add a score table with one row per reviewer, columns for the reviewer number, full model name, and reasoning effort, and one column per round. Keep the reviewer number in its own column. If several reviewers use the same model, repeat the model name in separate rows. Write `no score` when a reviewer omits a score and `not completed` when a review is missing.
 
 For example, a two-round council review could end with:
 
@@ -46,6 +48,8 @@ If a PR description update is authorized, replace the single-reviewer blurb with
 
 ## Check the council
 
+- The session opened with `THE COUNCIL IS IN SESSION`, and `THE COUNCIL HAS REACHED A VERDICT` followed the responses of every complete round.
+- The report followed `THE COUNCIL HAS SPOKEN` and the verdict line that matches the outcome.
 - Every member reviewed the same version independently.
 - Duplicate findings retain their reviewer IDs.
 - Every member approved the current work, or the report explains why the review stopped.
