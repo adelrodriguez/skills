@@ -133,7 +133,7 @@ A ✓ under **Agent invocation** means the agent also starts the skill on its ow
 | `modernize` | ✓ | Upgrades dependencies, reads their release notes, and adopts the changes | `consistency`, `pr` |
 | `monitor` | ✓ | Watches a pull request until its checks pass and its reviewers approve, and fixes what they find | Python 3, `gh`, `code-review`, `comment`, `upload` |
 | `next-task` | ✓ | Recommends the one unblocked issue to do next | `gh` |
-| `no-mistakes` |  | Takes a task to a ready pull request with a council-approved design, a clean rebuild from the base, and evidence for every claim | Subagents, `council-review`, `codebase-design`, `testing`, `footguns`, `harden-ui`, `restraint`, `prune`, `full-stop`, `full-send` |
+| `no-mistakes` |  | Takes a task to a ready pull request with a council-approved design, a clean rebuild from the base, and evidence for every claim | Subagents, `council-review`, `code-review`, `codebase-design`, `footguns`, `harden-ui`, `restraint`, `prune`, `full-stop`, `full-send`, `coding-standards` |
 | `pr` | ✓ | Opens a pull request with a problem-first description and evidence | `gh`, `unslop`, `upload`, `monitor`, `comment` |
 | `prune` | ✓ | Removes unused tests, dependencies, dead code, suppressions, workarounds, feature flags, assets, and config, and strengthens weak tests | `testing`, `modernize` for upgrades |
 | `refresh` | ✓ | Rebases a pull request onto its base, adapts it to what merged since, and pushes it | `gh`, `pr`, `monitor` |
